@@ -1,0 +1,54 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.container {
+  max-width: 1140px;
+  padding:48px;
+  color: yellow;
+}
+.show-review td {
+    border-width: 5px;
+    padding: 1px;
+    border-style: solid;
+    border-color: white;
+    background-color: #ffc7f0;
+}
+.main-cast-container {
+    width: 100%;
+    background-color:  #9bfda8;
+    padding: 10px;
+    color: black;
+}
+.show-info-container div{
+    background-color: red;
+}
+.img {
+    border: 50px solid #555;
+    margin-left: 75px; 
+}
+
+.main-cast-container .cast .cast-link {
+    padding-bottom: 6px;
+    padding-left:20px;
+    margin-left: 140px
+    
+}
+.main-cast-container .cast {
+    display:inline-table; 
+}
