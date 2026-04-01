@@ -1,115 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LC Pattern Cheatsheet</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        h1 {
-            color: #333;
-        }
-        pre {
-            background: #f4f4f4;
-            padding: 10px;
-            border-radius: 5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LC Pattern Cheatsheet</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    background: #0A0A0F;
+    color: #E2E8F0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #header {
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid #1E2030;
+    background: #0D0D1A;
+    flex-shrink: 0;
+  }
+  #header h1 { font-size: 17px; font-weight: 800; color: #fff; display: inline; }
+  #header .badge { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: #00D4FF; margin-left: 10px; }
+  #header p { font-size: 10px; color: #4A5568; margin-top: 3px; }
+  #main { display: flex; flex: 1; overflow: hidden; }
+  #sidebar {
+    width: 185px;
+    flex-shrink: 0;
+    background: #080810;
+    border-right: 1px solid #1E2030;
+    overflow-y: auto;
+  }
+  .nav-btn {
+    display: block; width: 100%; text-align: left;
+    padding: 9px 14px; border: none; cursor: pointer;
+    background: transparent;
+    border-left: 3px solid transparent;
+    transition: background 0.1s;
+  }
+  .nav-btn:hover { background: #0F0F1A; }
+  .nav-btn.active { background: #13131F; }
+  .nav-btn .btn-name { font-size: 11px; font-weight: 700; color: #64748B; font-family: inherit; }
+  .nav-btn.active .btn-name { }
+  .nav-btn .btn-freq { font-size: 10px; color: #4A5568; margin-top: 2px; }
+  #detail {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 22px;
+  }
+  #detail-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px; padding-bottom: 12px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  #detail-title { font-size: 16px; font-weight: 800; }
+  #detail-freq { margin-left: auto; font-size: 14px; }
+  .section-label {
+    font-size: 10px; color: #4A5568;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 7px;
+  }
+  #triggers { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+  .tag {
+    padding: 3px 9px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+    border: 1px solid;
+  }
+  #insight-box {
+    background: #13131F;
+    border: 1px solid #1E2030;
+    border-left: 4px solid;
+    border-radius: 6px;
+    padding: 11px 14px;
+    margin-bottom: 14px;
+  }
+  #insight-text { font-size: 12px; line-height: 1.65; color: #CBD5E1; }
+  #toggle-btn {
+    margin-bottom: 10px; padding: 5px 12px; border-radius: 4px;
+    background: #13131F; border: 1px solid #2D2D40;
+    color: #64748B; cursor: pointer;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    font-family: inherit;
+  }
+  #template-box {
+    background: #0D0D1A; border: 1px solid;
+    border-radius: 6px; padding: 12px 14px; margin-bottom: 14px;
+    font-size: 11px; line-height: 1.7; color: #A5B4FC;
+    overflow-x: auto; white-space: pre; display: none;
+  }
+  #questions { }
+  .q-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; margin-bottom: 5px;
+    background: #0D0D1A; border-radius: 5px;
+    border: 1px solid #1A1A2E;
+  }
+  .q-diff { font-size: 10px; font-weight: 800; min-width: 46px; }
+  .q-name { font-size: 12px; font-weight: 600; color: #E2E8F0; flex: 1; }
+  .q-note { font-size: 10px; color: #4A5568; text-align: right; max-width: 160px; }
+</style>
 </head>
 <body>
-    <h1>LC Pattern Cheatsheet</h1>
-    <h2>1. Sliding Window</h2>
-    <pre>
-// Sliding Window example
-function slidingWindow(arr, k) {
-    let maxSum = 0;
-    let windowSum = 0;
 
-    for (let i = 0; i < arr.length; i++) {
-        windowSum += arr[i];
-        if (i >= k - 1) {
-            maxSum = Math.max(maxSum, windowSum);
-            windowSum -= arr[i - (k - 1)];
-        }
-    }
-    return maxSum;
-}
-    </pre>
-    <h2>2. Two Pointers</h2>
-    <pre>
-// Two Pointers example
-function twoPointers(arr) {
-    let left = 0;
-    let right = arr.length - 1;
-    let result = [];
+<div id="header">
+  <h1>LC Pattern Cheatsheet</h1>
+  <span class="badge">SENIOR ENG EDITION</span>
+  <p>1hr/day · pattern recognition · trigger words · must-know questions</p>
+</div>
 
-    while (left <= right) {
-        if (arr[left] < arr[right]) {
-            result.push(arr[left]);
-            left++;
-        } else {
-            result.push(arr[right]);
-            right--;
-        }
-    }
-    return result;
-}
-    </pre>
-    <h2>3. Fast & Slow Pointers</h2>
-    <pre>
-// Fast & Slow Pointers example
-function hasCycle(head) {
-    let slow = head;
-    let fast = head;
+<div id="main">
+  <div id="sidebar"></div>
+  <div id="detail">
+    <div id="detail-header">
+      <div class="dot" id="dot"></div>
+      <div id="detail-title"></div>
+      <div id="detail-freq"></div>
+    </div>
+    <div class="section-label">🎯 Trigger Words — hear these, think this pattern</div>
+    <div id="triggers"></div>
+    <div id="insight-box">
+      <div class="section-label">💡 Core Insight</div>
+      <div id="insight-text"></div>
+    </div>
+    <button id="toggle-btn" onclick="toggleTemplate()">▶ SHOW CODE TEMPLATE</button>
+    <pre id="template-box"></pre>
+    <div class="section-label">📋 Must-Know Questions</div>
+    <div id="questions"></div>
+  </div>
+</div>
 
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
-        if (slow === fast) {
-            return true;
-        }
-    }
-    return false;
-}
-    </pre>
-    <h2>4. Merge Intervals</h2>
-    <pre>
-// Merge Intervals example
-function mergeIntervals(intervals) {
-    intervals.sort((a, b) => a[0] - b[0]);
-    const merged = [];
+<script>
+const patterns = [
+  {
+    id: "two-pointer", name: "Two Pointers", color: "#00D4FF", freq: "★★★★★",
+    triggerWords: ["sorted array", "pair sum", "palindrome", "in-place", "remove duplicates", "container water"],
+    insight: "Two indices moving toward each other (or same direction). Works on sorted data or when you need O(1) space. Key question: what condition moves which pointer?",
+    template: `left, right = 0, len(arr)-1
+while left < right:
+    if condition_met:
+        return result
+    elif need_more:
+        left += 1
+    else:
+        right -= 1`,
+    questions: [
+      { name: "Two Sum II", diff: "Easy", note: "sorted → two pointers" },
+      { name: "Container With Most Water", diff: "Medium", note: "maximize area, shrink shorter side" },
+      { name: "3Sum", diff: "Medium", note: "sort + two pointers for each i" },
+      { name: "Trapping Rain Water", diff: "Hard", note: "track left_max, right_max" },
+      { name: "Valid Palindrome", diff: "Easy", note: "skip non-alphanum chars" },
+    ]
+  },
+  {
+    id: "sliding-window", name: "Sliding Window", color: "#FF6B6B", freq: "★★★★★",
+    triggerWords: ["substring", "subarray", "contiguous", "at most k", "longest", "minimum window", "max sum k elements"],
+    insight: "Expand right, shrink left when constraint violated. HashMap tracks counts. The window always represents a valid or candidate state. Each element enters and leaves once = O(n).",
+    template: `left = 0
+counts = {}
+for right in range(len(s)):
+    counts[s[right]] = counts.get(s[right], 0) + 1
+    while window_invalid(counts):
+        counts[s[left]] -= 1
+        left += 1
+    ans = max(ans, right - left + 1)`,
+    questions: [
+      { name: "Longest Substring Without Repeating", diff: "Medium", note: "set to track chars" },
+      { name: "Minimum Window Substring", diff: "Hard", note: "need/have counter pattern" },
+      { name: "Longest Repeating Char Replacement", diff: "Medium", note: "window_size - max_freq <= k" },
+      { name: "Permutation in String", diff: "Medium", note: "fixed-size window" },
+      { name: "Fruit Into Baskets", diff: "Medium", note: "at most 2 distinct" },
+    ]
+  },
+  {
+    id: "fast-slow", name: "Fast & Slow Pointers", color: "#A78BFA", freq: "★★★★",
+    triggerWords: ["linked list cycle", "find middle", "palindrome linked list", "happy number", "find duplicate"],
+    insight: "Floyd's cycle detection. Fast moves 2x. If cycle exists they meet. When fast hits end, slow is at the middle. Reuse for palindrome check by reversing second half.",
+    template: `slow = fast = head
+while fast and fast.next:
+    slow = slow.next
+    fast = fast.next.next
+    if slow == fast:
+        break  # cycle detected
+# slow is now at middle if no cycle`,
+    questions: [
+      { name: "Linked List Cycle", diff: "Easy", note: "do they meet?" },
+      { name: "Find the Duplicate Number", diff: "Medium", note: "array indices as linked list" },
+      { name: "Middle of Linked List", diff: "Easy", note: "slow stops at mid" },
+      { name: "Palindrome Linked List", diff: "Easy", note: "find mid + reverse second half" },
+      { name: "Linked List Cycle II", diff: "Medium", note: "find cycle entry point" },
+    ]
+  },
+  {
+    id: "bfs-dfs", name: "BFS / DFS", color: "#34D399", freq: "★★★★★",
+    triggerWords: ["shortest path", "level order", "connected components", "islands", "flood fill", "word ladder", "matrix traversal"],
+    insight: "BFS = shortest path, level-by-level (queue). DFS = explore fully before backtracking (stack/recursion). BFS on unweighted graphs always gives shortest path. Multi-source BFS: start with all sources in queue.",
+    template: `from collections import deque
+q = deque([(start, 0)])  # node, distance
+visited = {start}
+while q:
+    node, dist = q.popleft()
+    for nei in graph[node]:
+        if nei not in visited:
+            visited.add(nei)
+            q.append((nei, dist + 1))`,
+    questions: [
+      { name: "Number of Islands", diff: "Medium", note: "DFS/BFS on grid, mark visited" },
+      { name: "Rotting Oranges", diff: "Medium", note: "multi-source BFS from all rotten" },
+      { name: "Word Ladder", diff: "Hard", note: "BFS for min char transforms" },
+      { name: "Clone Graph", diff: "Medium", note: "DFS + old→new node hashmap" },
+      { name: "Pacific Atlantic Water Flow", diff: "Medium", note: "reverse BFS from both coasts" },
+      { name: "Max Area of Island", diff: "Medium", note: "DFS + count cells" },
+    ]
+  },
+  {
+    id: "binary-search", name: "Binary Search", color: "#FBBF24", freq: "★★★★★",
+    triggerWords: ["sorted array", "find minimum", "search rotated", "O(log n)", "kth smallest", "feasible/possible"],
+    insight: "Don't limit to arrays — binary search on the ANSWER SPACE. 'Find minimum X such that condition holds' → lo=min, hi=max, check feasible(mid). This unlocks a whole class of hard problems.",
+    template: `# Classic
+lo, hi = 0, len(arr) - 1
+while lo <= hi:
+    mid = (lo + hi) // 2
+    if arr[mid] == target: return mid
+    elif arr[mid] < target: lo = mid + 1
+    else: hi = mid - 1
 
-    for (let interval of intervals) {
-        const last = merged[merged.length - 1];
-        if (!last || last[1] < interval[0]) {
-            merged.push(interval);
-        } else {
-            last[1] = Math.max(last[1], interval[1]);
-        }
-    }
-    return merged;
+# Answer-space pattern
+lo, hi = min_possible, max_possible
+while lo < hi:
+    mid = (lo + hi) // 2
+    if feasible(mid): hi = mid
+    else: lo = mid + 1`,
+    questions: [
+      { name: "Binary Search", diff: "Easy", note: "nail the template cold" },
+      { name: "Search in Rotated Sorted Array", diff: "Medium", note: "determine which half is sorted" },
+      { name: "Find Minimum in Rotated Array", diff: "Medium", note: "find the pivot" },
+      { name: "Koko Eating Bananas", diff: "Medium", note: "binary search on answer (speed)" },
+      { name: "Median of Two Sorted Arrays", diff: "Hard", note: "partition trick" },
+    ]
+  },
+  {
+    id: "heap", name: "Heap / Priority Queue", color: "#FB923C", freq: "★★★★",
+    triggerWords: ["top k", "kth largest", "k closest", "merge k sorted", "median stream", "task scheduler"],
+    insight: "Python heapq is min-heap. Negate for max-heap. Keep heap size K → O(n log k) for top-K. Two heaps (max lower half + min upper half) gives O(1) median.",
+    template: `import heapq
+
+# Min-heap size K = top K largest
+heap = []
+for num in nums:
+    heapq.heappush(heap, num)
+    if len(heap) > k:
+        heapq.heappop(heap)
+# heap[0] is Kth largest
+
+# Max-heap: negate values
+heapq.heappush(heap, -val)
+max_val = -heapq.heappop(heap)`,
+    questions: [
+      { name: "Kth Largest Element", diff: "Medium", note: "min-heap of size K" },
+      { name: "Top K Frequent Elements", diff: "Medium", note: "Counter + heap" },
+      { name: "Merge K Sorted Lists", diff: "Hard", note: "heap: (val, list_idx, node)" },
+      { name: "Find Median from Data Stream", diff: "Hard", note: "max-heap lower + min-heap upper" },
+      { name: "K Closest Points to Origin", diff: "Medium", note: "max-heap on distance, size K" },
+    ]
+  },
+  {
+    id: "dp", name: "Dynamic Programming", color: "#F472B6", freq: "★★★★★",
+    triggerWords: ["max/min result", "count ways", "is it possible", "subsequence", "partition", "knapsack", "how many paths"],
+    insight: "Ask: can I express this as a recurrence on smaller subproblems I reuse? Start with recursion + memo, then convert to tabulation. Number of changing variables = dp array dimensions.",
+    template: `# Start: recursion + memo
+from functools import lru_cache
+@lru_cache(maxsize=None)
+def dp(i, j):
+    if base_case: return 0
+    return min(dp(i+1,j), dp(i,j+1)) + cost
+
+# Convert to bottom-up
+dp = [[0]*(m+1) for _ in range(n+1)]
+for i in range(1, n+1):
+    for j in range(1, m+1):
+        dp[i][j] = recurrence`,
+    questions: [
+      { name: "Climbing Stairs", diff: "Easy", note: "Fibonacci structure" },
+      { name: "House Robber", diff: "Medium", note: "dp[i] = max(dp[i-1], dp[i-2]+num)" },
+      { name: "Longest Common Subsequence", diff: "Medium", note: "classic 2D dp" },
+      { name: "Coin Change", diff: "Medium", note: "unbounded knapsack" },
+      { name: "Word Break", diff: "Medium", note: "dp[i] = any dp[j] where s[j:i] in dict" },
+      { name: "Longest Increasing Subsequence", diff: "Medium", note: "O(n log n) patience sort" },
+    ]
+  },
+  {
+    id: "stack", name: "Stack / Monotonic Stack", color: "#2DD4BF", freq: "★★★★",
+    triggerWords: ["next greater element", "previous smaller", "valid parentheses", "daily temperatures", "largest rectangle"],
+    insight: "When you push, pop anything violating monotonic order — each pop resolves an answer for that element. Elements enter/leave once = O(n). Always store indices, not values.",
+    template: `# Monotonic decreasing: next greater
+stack = []  # indices
+ans = [0] * len(arr)
+for i, val in enumerate(arr):
+    while stack and arr[stack[-1]] < val:
+        idx = stack.pop()
+        ans[idx] = val  # next greater found
+    stack.append(i)`,
+    questions: [
+      { name: "Valid Parentheses", diff: "Easy", note: "classic, match brackets" },
+      { name: "Daily Temperatures", diff: "Medium", note: "next greater element" },
+      { name: "Largest Rectangle in Histogram", diff: "Hard", note: "mono stack, extend left+right" },
+      { name: "Min Stack", diff: "Medium", note: "track (val, current_min) pairs" },
+      { name: "Decode String", diff: "Medium", note: "stack handles nested brackets" },
+    ]
+  },
+  {
+    id: "backtracking", name: "Backtracking", color: "#A3E635", freq: "★★★★",
+    triggerWords: ["all combinations", "all permutations", "generate all", "subsets", "word search grid", "N-queens"],
+    insight: "DFS + undo. Choose → recurse → unchoose. The undo step is what makes it backtracking not just DFS. Prune branches early using constraints. Always copy path when adding to result.",
+    template: `def backtrack(start, path):
+    if is_complete(path):
+        result.append(path[:])  # copy!
+        return
+    for i in range(start, len(nums)):
+        if not valid(nums[i]): continue  # prune
+        path.append(nums[i])
+        backtrack(i + 1, path)
+        path.pop()  # UNDO`,
+    questions: [
+      { name: "Subsets", diff: "Medium", note: "include or exclude each element" },
+      { name: "Permutations", diff: "Medium", note: "visited array or swap in-place" },
+      { name: "Combination Sum", diff: "Medium", note: "reuse allowed, prune > target" },
+      { name: "Word Search", diff: "Medium", note: "DFS on grid, mark/unmark visited" },
+      { name: "N-Queens", diff: "Hard", note: "sets for col, diag1, diag2" },
+    ]
+  },
+  {
+    id: "intervals", name: "Intervals", color: "#F87171", freq: "★★★★",
+    triggerWords: ["merge intervals", "insert interval", "meeting rooms", "overlap", "schedule", "non-overlapping"],
+    insight: "Sort by start. Overlap when next.start <= curr.end. Merge by extending end. Count simultaneous meetings with a min-heap on end times (heap size = rooms needed).",
+    template: `# Merge overlapping
+intervals.sort(key=lambda x: x[0])
+merged = [intervals[0]]
+for start, end in intervals[1:]:
+    if start <= merged[-1][1]:
+        merged[-1][1] = max(merged[-1][1], end)
+    else:
+        merged.append([start, end])
+
+# Count meeting rooms needed
+import heapq
+ends = []
+for s, e in sorted(intervals):
+    if ends and ends[0] <= s:
+        heapq.heapreplace(ends, e)
+    else:
+        heapq.heappush(ends, e)
+return len(ends)`,
+    questions: [
+      { name: "Merge Intervals", diff: "Medium", note: "sort + extend end" },
+      { name: "Insert Interval", diff: "Medium", note: "find overlap zone, merge" },
+      { name: "Meeting Rooms II", diff: "Medium", note: "min-heap on end times" },
+      { name: "Non-overlapping Intervals", diff: "Medium", note: "greedy: keep earliest end" },
+    ]
+  },
+  {
+    id: "trie", name: "Trie / Prefix Tree", color: "#818CF8", freq: "★★★",
+    triggerWords: ["prefix search", "autocomplete", "starts with", "add and search words", "word search dictionary"],
+    insight: "Each node = one character. children dict maps char to TrieNode. is_end boolean flag. Insert O(L), Search O(L). For wildcard search use DFS through all children.",
+    template: `class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+
+class Trie:
+    def __init__(self): self.root = TrieNode()
+    def insert(self, word):
+        node = self.root
+        for c in word:
+            node = node.children.setdefault(c, TrieNode())
+        node.is_end = True
+    def search(self, word):
+        node = self.root
+        for c in word:
+            if c not in node.children: return False
+            node = node.children[c]
+        return node.is_end`,
+    questions: [
+      { name: "Implement Trie", diff: "Medium", note: "know cold" },
+      { name: "Word Search II", diff: "Hard", note: "Trie + DFS on board" },
+      { name: "Design Add and Search Words", diff: "Medium", note: "wildcard '.' → DFS all children" },
+    ]
+  },
+  {
+    id: "graphs-advanced", name: "Graphs (Advanced)", color: "#67E8F9", freq: "★★★",
+    triggerWords: ["topological sort", "course schedule", "cycle directed graph", "shortest path weighted", "union find", "redundant connection"],
+    insight: "Topo sort = Kahn's BFS (in-degree 0 queue). If result length != n, cycle exists. Union-Find with path compression + rank for connectivity. Dijkstra with min-heap for weighted shortest path.",
+    template: `# Kahn's Topological Sort
+from collections import deque
+indegree = [0]*n; graph = [[] for _ in range(n)]
+for u, v in edges:
+    graph[u].append(v); indegree[v] += 1
+q = deque(i for i in range(n) if indegree[i]==0)
+order = []
+while q:
+    node = q.popleft(); order.append(node)
+    for nei in graph[node]:
+        indegree[nei] -= 1
+        if indegree[nei] == 0: q.append(nei)
+# len(order) != n → cycle exists`,
+    questions: [
+      { name: "Course Schedule", diff: "Medium", note: "cycle detection via topo sort" },
+      { name: "Course Schedule II", diff: "Medium", note: "return topo order" },
+      { name: "Number of Connected Components", diff: "Medium", note: "Union-Find or DFS count" },
+      { name: "Redundant Connection", diff: "Medium", note: "Union-Find: edge merging same set" },
+      { name: "Network Delay Time", diff: "Medium", note: "Dijkstra from source" },
+    ]
+  },
+];
+
+const diffColors = { Easy: "#34D399", Medium: "#FBBF24", Hard: "#F87171" };
+let active = patterns[0].id;
+let templateVisible = false;
+
+function render() {
+  const p = patterns.find(x => x.id === active);
+
+  // sidebar
+  const sidebar = document.getElementById('sidebar');
+  sidebar.innerHTML = patterns.map(pat => `
+    <button class="nav-btn ${pat.id === active ? 'active' : ''}"
+      style="border-left-color: ${pat.id === active ? pat.color : 'transparent'}"
+      onclick="select('${pat.id}')">
+      <div class="btn-name" style="color: ${pat.id === active ? pat.color : '#64748B'}">${pat.name}</div>
+      <div class="btn-freq">${pat.freq}</div>
+    </button>
+  `).join('');
+
+  // header
+  document.getElementById('dot').style.background = p.color;
+  document.getElementById('dot').style.boxShadow = `0 0 8px ${p.color}`;
+  document.getElementById('detail-header').style.borderBottom = `1px solid ${p.color}22`;
+  document.getElementById('detail-title').style.color = p.color;
+  document.getElementById('detail-title').textContent = p.name;
+  document.getElementById('detail-freq').textContent = p.freq;
+
+  // triggers
+  document.getElementById('triggers').innerHTML = p.triggerWords.map(w => `
+    <span class="tag" style="background:${p.color}18; border-color:${p.color}40; color:${p.color}">${w}</span>
+  `).join('');
+
+  // insight
+  document.getElementById('insight-box').style.borderLeftColor = p.color;
+  document.getElementById('insight-text').textContent = p.insight;
+
+  // template
+  templateVisible = false;
+  const tmpl = document.getElementById('template-box');
+  tmpl.style.display = 'none';
+  tmpl.style.borderColor = p.color + '30';
+  tmpl.textContent = p.template;
+  const btn = document.getElementById('toggle-btn');
+  btn.textContent = '▶ SHOW CODE TEMPLATE';
+  btn.style.background = '#13131F';
+  btn.style.borderColor = '#2D2D40';
+  btn.style.color = '#64748B';
+
+  // questions
+  document.getElementById('questions').innerHTML = p.questions.map(q => `
+    <div class="q-row">
+      <span class="q-diff" style="color:${diffColors[q.diff]}">${q.diff}</span>
+      <span class="q-name">${q.name}</span>
+      <span class="q-note">${q.note}</span>
+    </div>
+  `).join('');
 }
-    </pre>
-    <h2>5. Backtracking</h2>
-    <pre>
-// Backtracking example
-function backtrack(path, options) {
-    if (/* base case */) {
-        results.push(path);
-        return;
-    }
-    for (let option of options) {
-        path.push(option);
-        backtrack(path, options);
-        path.pop();
-    }
+
+function select(id) {
+  active = id;
+  render();
 }
-    </pre>
+
+function toggleTemplate() {
+  const p = patterns.find(x => x.id === active);
+  templateVisible = !templateVisible;
+  const tmpl = document.getElementById('template-box');
+  const btn = document.getElementById('toggle-btn');
+  tmpl.style.display = templateVisible ? 'block' : 'none';
+  btn.textContent = templateVisible ? '▼ HIDE TEMPLATE' : '▶ SHOW CODE TEMPLATE';
+  btn.style.background = templateVisible ? p.color + '18' : '#13131F';
+  btn.style.borderColor = templateVisible ? p.color : '#2D2D40';
+  btn.style.color = templateVisible ? p.color : '#64748B';
+}
+
+render();
+</script>
 </body>
 </html>
