@@ -1,172 +1,141 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LC Pattern Cheatsheet — Java Edition</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LC Patterns · Java</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:       #07080F;
-    --bg2:      #0D0E1A;
-    --bg3:      #12131F;
-    --border:   #1C1D2E;
-    --text:     #D8DCE8;
-    --muted:    #3D4060;
-    --faint:    #1E2035;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'JetBrains Mono', monospace;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    font-size: 13px;
-  }
+:root {
+  --bg:     #07080F;
+  --bg2:    #0D0E1A;
+  --bg3:    #12131F;
+  --border: #1C1D2E;
+  --text:   #D8DCE8;
+  --muted:  #3D4060;
+  --faint:  #1E2035;
+  --accent: #4DFFC3;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body {
+  height: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  overscroll-behavior: none;
+}
 
 /* ── Header ── */
 #header {
-padding: 14px 22px 11px;
-background: var(–bg2);
-border-bottom: 1px solid var(–border);
-display: flex;
-align-items: baseline;
-gap: 14px;
-flex-shrink: 0;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; height: 54px;
 }
-#header h1 {
-font-family: ‘Syne’, sans-serif;
-font-size: 18px;
-font-weight: 800;
-color: #fff;
-letter-spacing: -0.5px;
-}
-#header .badge {
-font-size: 9px;
-font-weight: 700;
-letter-spacing: 2.5px;
-color: #4DFFC3;
-text-transform: uppercase;
-}
-#header .sub {
-font-size: 10px;
-color: var(–muted);
-margin-left: auto;
+#header h1 { font-family:'Syne',sans-serif; font-size:16px; font-weight:800; color:#fff; white-space:nowrap; }
+#header .badge { font-size:8px; font-weight:700; letter-spacing:2px; color:var(--accent); text-transform:uppercase; white-space:nowrap; }
+#menu-btn { display:none; margin-left:auto; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+#menu-btn span { display:block; width:20px; height:2px; background:var(--text); border-radius:2px; }
+
+/* ── Desktop ── */
+@media (min-width: 768px) {
+  body { overflow: hidden; }
+  #header .sub { font-size:10px; color:var(--muted); margin-left:auto; white-space:nowrap; }
+  #app { display:flex; position:fixed; top:54px; left:0; right:0; bottom:0; }
+  #sidebar { width:200px; flex-shrink:0; background:#090A14; border-right:1px solid var(--border); overflow-y:auto; padding:6px 0; }
+  .nav-btn { display:block; width:100%; text-align:left; padding:9px 14px; border:none; cursor:pointer; background:transparent; border-left:3px solid transparent; font-family:inherit; transition:background 0.12s; }
+  .nav-btn:hover { background:var(--faint); }
+  .nav-btn.active { background:var(--bg3); }
+  .nav-name { font-size:11px; font-weight:700; color:#4A5080; }
+  .nav-freq { font-size:10px; color:#2A2E50; margin-top:2px; }
+  #detail { flex:1; overflow-y:auto; padding:20px 28px; }
+  #mobile-nav, #menu-btn, #drawer-overlay, #drawer { display:none !important; }
 }
 
-/* ── Layout ── */
-#main { display: flex; flex: 1; overflow: hidden; }
-
-/* ── Sidebar ── */
-#sidebar {
-width: 195px;
-flex-shrink: 0;
-background: #090A14;
-border-right: 1px solid var(–border);
-overflow-y: auto;
-padding: 6px 0;
-}
-.nav-btn {
-display: block; width: 100%; text-align: left;
-padding: 8px 14px; border: none; cursor: pointer;
-background: transparent;
-border-left: 3px solid transparent;
-font-family: inherit;
-transition: background 0.12s;
-}
-.nav-btn:hover { background: var(–faint); }
-.nav-btn.active { background: var(–bg3); }
-.nav-name { font-size: 11px; font-weight: 700; color: #4A5080; }
-.nav-btn.active .nav-name { }
-.nav-freq { font-size: 10px; color: #2A2E50; margin-top: 2px; }
-
-/* ── Detail pane ── */
-#detail { flex: 1; overflow-y: auto; padding: 20px 24px; }
-
-.detail-header {
-display: flex; align-items: center; gap: 10px;
-margin-bottom: 16px; padding-bottom: 13px;
-border-bottom: 1px solid var(–border);
-}
-.dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-#detail-title { font-family: ‘Syne’, sans-serif; font-size: 17px; font-weight: 800; }
-#detail-freq { margin-left: auto; font-size: 15px; }
-
-.section-label {
-font-size: 9px; font-weight: 700;
-text-transform: uppercase; letter-spacing: 1.5px;
-color: var(–muted); margin-bottom: 7px;
+/* ── Mobile ── */
+@media (max-width: 767px) {
+  #header .sub { display:none; }
+  #menu-btn { display:flex; }
+  #app { position:fixed; top:54px; left:0; right:0; bottom:60px; overflow:hidden; }
+  #sidebar { display:none; }
+  #drawer-overlay { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.6); }
+  #drawer-overlay.open { display:block; }
+  #drawer { position:fixed; top:0; left:-260px; bottom:0; width:260px; z-index:201; background:#090A14; border-right:1px solid var(--border); overflow-y:auto; padding:60px 0 20px; transition:left 0.25s ease; }
+  #drawer.open { left:0; }
+  .drawer-btn { display:block; width:100%; text-align:left; padding:12px 20px; border:none; cursor:pointer; background:transparent; border-left:3px solid transparent; font-family:inherit; }
+  .drawer-btn.active { background:var(--bg3); }
+  #detail { height:100%; overflow-y:auto; padding:16px 16px 24px; -webkit-overflow-scrolling:touch; }
+  #mobile-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:var(--bg2); border-top:1px solid var(--border); display:flex; align-items:center; padding:0 16px; gap:12px; z-index:100; }
+  #mobile-nav .nav-prev, #mobile-nav .nav-next { background:var(--bg3); border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:18px; cursor:pointer; width:40px; height:36px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  #mobile-nav .nav-label { flex:1; text-align:center; font-size:11px; font-weight:700; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #mobile-nav .nav-counter { font-size:10px; color:var(--muted); flex-shrink:0; }
 }
 
-/* Trigger tags */
-#triggers { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
-.tag {
-padding: 3px 9px; border-radius: 3px;
-font-size: 10px; font-weight: 700;
-border: 1px solid; letter-spacing: 0.3px;
-}
+/* ── Shared detail styles ── */
+.detail-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+.dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+#detail-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; }
+#detail-freq { margin-left:auto; font-size:15px; }
 
-/* Insight */
-#insight-box {
-border-radius: 6px; padding: 12px 15px;
-margin-bottom: 15px;
-background: var(–bg3);
-border: 1px solid var(–border);
-border-left-width: 4px;
-}
-#insight-text { font-size: 12px; line-height: 1.7; color: #A8B0CC; }
+.section-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:7px; }
 
-/* Toggle btn */
-#toggle-btn {
-margin-bottom: 10px; padding: 5px 13px; border-radius: 4px;
-background: var(–bg3); border: 1px solid var(–border);
-color: var(–muted); cursor: pointer;
-font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
-font-family: inherit;
-}
+#triggers { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+.tag { padding:4px 10px; border-radius:4px; font-size:11px; font-weight:700; border:1px solid; }
 
-/* Code block */
-#template-box {
-background: #06070E;
-border-radius: 6px; padding: 14px 16px; margin-bottom: 16px;
-font-size: 11.5px; line-height: 1.75; color: #C5CDEE;
-overflow-x: auto; white-space: pre; display: none;
-border: 1px solid var(–border);
+/* Visual diagram box */
+#visual-box {
+  border-radius:6px; padding:14px 16px; margin-bottom:14px;
+  background:#06070E; border:1px solid var(--border);
+  border-left-width:4px;
 }
-/* Syntax highlights */
-.kw  { color: #7B8CFF; font-weight: 600; } /* keywords */
-.tp  { color: #4DFFC3; }                    /* types */
-.cm  { color: #3D4A6A; font-style: italic; }/* comments */
-.st  { color: #FFB86C; }                    /* strings */
-.nm  { color: #FF79C6; }                    /* numbers / literals */
-.fn  { color: #8BE9FD; }                    /* method names */
+#visual-rule {
+  font-size:13px; font-weight:700; color:#fff;
+  margin-bottom:12px; line-height:1.5;
+}
+#visual-diagram {
+  font-size:11px; line-height:1.8; color:#7B8FBF;
+  white-space:pre; overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+@media (max-width:767px) { #visual-diagram { font-size:10px; } }
+
+/* Insight box */
+#insight-box { border-radius:6px; padding:13px 15px; margin-bottom:16px; background:var(--bg3); border:1px solid var(--border); border-left-width:4px; }
+#insight-text { font-size:12px; line-height:1.7; color:#A8B0CC; }
+
+/* Template toggle */
+#toggle-btn { margin-bottom:10px; padding:8px 14px; border-radius:5px; background:var(--bg3); border:1px solid var(--border); color:var(--muted); cursor:pointer; font-size:11px; font-weight:700; letter-spacing:0.5px; font-family:inherit; width:100%; text-align:left; }
+
+/* Code */
+#template-box { background:#06070E; border-radius:6px; padding:14px 16px; margin-bottom:16px; font-size:11px; line-height:1.75; color:#C5CDEE; overflow-x:auto; white-space:pre; display:none; border:1px solid var(--border); -webkit-overflow-scrolling:touch; }
+@media (max-width:767px) { #template-box { font-size:10.5px; } }
+.kw { color:#7B8CFF; font-weight:600; }
+.tp { color:#4DFFC3; }
+.cm { color:#3D4A6A; font-style:italic; }
+.st { color:#FFB86C; }
 
 /* Questions */
-.q-row {
-display: flex; align-items: center; gap: 10px;
-padding: 9px 13px; margin-bottom: 5px;
-background: var(–bg3); border-radius: 5px;
-border: 1px solid var(–faint);
-}
-.q-diff { font-size: 10px; font-weight: 800; min-width: 48px; }
-.q-name { font-size: 12px; font-weight: 600; color: var(–text); flex: 1; }
-.q-note { font-size: 10px; color: var(–muted); text-align: right; }
+.q-row { display:flex; align-items:center; gap:8px; padding:10px 13px; margin-bottom:5px; background:var(--bg3); border-radius:6px; border:1px solid var(--faint); }
+.q-diff { font-size:10px; font-weight:800; min-width:48px; flex-shrink:0; }
+.q-name { font-size:12px; font-weight:600; color:var(--text); flex:1; }
+.q-note { font-size:10px; color:var(--muted); text-align:right; }
+@media (max-width:400px) { .q-note { display:none; } }
 </style>
-
 </head>
 <body>
 
 <div id="header">
-  <h1>LC Pattern Cheatsheet</h1>
-  <span class="badge">Java · EPI Style</span>
-  <span class="sub">1hr/day · pattern recognition · clean implementations</span>
+  <h1>LC Patterns</h1>
+  <span class="badge">Java · EPI</span>
+  <span class="sub">visual · english rule · clean Java</span>
+  <button id="menu-btn" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
 </div>
 
-<div id="main">
+<div id="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer"></div>
+
+<div id="app">
   <div id="sidebar"></div>
   <div id="detail">
     <div class="detail-header">
@@ -174,201 +143,288 @@ border: 1px solid var(–faint);
       <div id="detail-title"></div>
       <div id="detail-freq"></div>
     </div>
-    <div class="section-label">🎯 Trigger Words — hear these, think this pattern</div>
+    <div class="section-label">🎯 Trigger Words</div>
     <div id="triggers"></div>
+    <div id="visual-box">
+      <div id="visual-rule"></div>
+      <div id="visual-diagram"></div>
+    </div>
     <div id="insight-box">
       <div class="section-label">💡 Core Insight</div>
       <div id="insight-text"></div>
     </div>
-    <button id="toggle-btn" onclick="toggleTemplate()">▶ SHOW JAVA TEMPLATE</button>
+    <button id="toggle-btn" onclick="toggleTemplate()">▶ SHOW JAVA CODE</button>
     <pre id="template-box"></pre>
     <div class="section-label">📋 Must-Know Questions</div>
     <div id="questions"></div>
   </div>
 </div>
 
+<div id="mobile-nav">
+  <button class="nav-prev" onclick="navigate(-1)">‹</button>
+  <span class="nav-label" id="mob-label"></span>
+  <span class="nav-counter" id="mob-counter"></span>
+  <button class="nav-next" onclick="navigate(1)">›</button>
+</div>
+
 <script>
-// ─────────────────────────────────────────────
-//  Data — modelled as plain JS objects mirroring
-//  what would be Java POJOs in a real codebase
-// ─────────────────────────────────────────────
+function highlightJava(code) {
+  const keywords = /\b(public|private|class|record|new|return|if|else|for|while|break|continue|void|int|boolean|char|double|static|final|null|true|false|this)\b/g;
+  const types    = /\b(List|Map|Set|Queue|Deque|PriorityQueue|ArrayDeque|ArrayList|HashMap|HashSet|String|Integer|Character|Arrays|Collections|IntStream|Comparator|Optional|Objects|Math)\b/g;
+  const comments = /(\/\/[^\n]*)/g;
+  const strings  = /("[^"]*")/g;
+  return code
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(strings,  '<span class="st">$1</span>')
+    .replace(comments, '<span class="cm">$1</span>')
+    .replace(keywords, '<span class="kw">$1</span>')
+    .replace(types,    '<span class="tp">$1</span>');
+}
+
 const patterns = [
   {
-    id: "two-pointer",
-    name: "Two Pointers",
-    color: "#00D4FF",
-    freq: "★★★★★",
-    triggerWords: ["sorted array", "pair sum", "palindrome", "in-place", "remove duplicates", "container water"],
-    insight: "Two indices moving toward each other (or same direction). Works on sorted data or when you need O(1) space. Ask: what condition moves which pointer?",
-    template: highlightJava(
-`// Two Pointers — canonical template
-// Works when the array is sorted or when O(1) space is required.
+    id:"two-pointer", name:"Two Pointers", color:"#00D4FF", freq:"★★★★★",
+    triggerWords:["sorted array","pair sum","palindrome","in-place","remove duplicates","container water"],
+    rule:"Start at both ends. Walk inward. The sorted order tells you which side to move.",
+    diagram:
+`  [ 1   3   5   7   9  11 ]    target = 12
+    ↑                   ↑
+   left               right     sum=12 ✓ found!
 
-public int twoPointers(int[] nums, int target) {
+  [ 1   3   5   7   9  11 ]    target = 10
+    ↑               ↑
+   left           right         sum=10 ✓ found!
+
+  [ 1   3   5   7   9  11 ]    target = 10
+        ↑       ↑
+       left   right             sum=12 → too big → right--
+
+Rule: sum too small → left++  (need bigger)
+      sum too big  → right--  (need smaller)
+      sum matches  → done ✓`,
+    insight:"Two indices walking toward each other on sorted data. Sorted order guarantees: moving left up increases the sum, moving right down decreases it. That's the entire trick.",
+    template: highlightJava(
+`public int[] twoSum(int[] nums, int target) {
     int left  = 0;
     int right = nums.length - 1;
 
     while (left < right) {
         int sum = nums[left] + nums[right];
 
-        if (sum == target) {
-            return encode(left, right);   // found pair
-        } else if (sum < target) {
-            left++;                        // need larger value
-        } else {
-            right--;                       // need smaller value
-        }
+        if      (isTooSmall(sum, target)) left++;
+        else if (isTooBig(sum, target))   right--;
+        else                              return new int[]{left + 1, right + 1};
     }
-    return -1; // no pair found
+    return new int[]{};
 }
 
-// ── 3Sum variant: fix one, run two-pointer for the rest ──
+// ── 3Sum: fix one element, then run two-pointer for the pair ──
 public List<List<Integer>> threeSum(int[] nums) {
     Arrays.sort(nums);
     List<List<Integer>> result = new ArrayList<>();
 
     for (int i = 0; i < nums.length - 2; i++) {
-        if (i > 0 && nums[i] == nums[i - 1]) continue; // skip duplicates
-
-        int left  = i + 1;
-        int right = nums.length - 1;
-
-        while (left < right) {
-            int sum = nums[i] + nums[left] + nums[right];
-            if      (sum == 0) { result.add(List.of(nums[i], nums[left++], nums[right--])); }
-            else if (sum  < 0) { left++;  }
-            else               { right--; }
-        }
+        if (isDuplicate(nums, i)) continue;
+        result.addAll(twoSumPairs(nums, i + 1, nums.length - 1, -nums[i]));
     }
     return result;
-}`),
-    questions: [
-      { name: "Two Sum II", diff: "Easy",   note: "sorted → two pointers" },
-      { name: "Container With Most Water", diff: "Medium", note: "shrink shorter side" },
-      { name: "3Sum",              diff: "Medium", note: "sort + two pointers per i" },
-      { name: "Trapping Rain Water", diff: "Hard", note: "track leftMax, rightMax" },
-      { name: "Valid Palindrome",  diff: "Easy",   note: "skip non-alphanum" },
+}
+
+private List<List<Integer>> twoSumPairs(int[] nums, int left, int right, int target) {
+    List<List<Integer>> pairs = new ArrayList<>();
+    while (left < right) {
+        int sum = nums[left] + nums[right];
+        if      (isTooSmall(sum, target)) left++;
+        else if (isTooBig(sum, target))   right--;
+        else { pairs.add(List.of(-target, nums[left++], nums[right--])); }
+    }
+    return pairs;
+}
+
+private boolean isTooSmall(int sum, int target) { return sum < target; }
+private boolean isTooBig(int sum, int target)   { return sum > target; }
+private boolean isDuplicate(int[] nums, int i)  { return i > 0 && nums[i] == nums[i - 1]; }`),
+    questions:[
+      {name:"Two Sum II",diff:"Easy",note:"sorted → two pointers"},
+      {name:"Container With Most Water",diff:"Medium",note:"shrink shorter side"},
+      {name:"3Sum",diff:"Medium",note:"sort + two-pointer per i"},
+      {name:"Trapping Rain Water",diff:"Hard",note:"track leftMax, rightMax"},
+      {name:"Valid Palindrome",diff:"Easy",note:"skip non-alphanum"},
     ]
   },
   {
-    id: "sliding-window",
-    name: "Sliding Window",
-    color: "#FF6B6B",
-    freq: "★★★★★",
-    triggerWords: ["substring", "subarray", "contiguous", "at most k", "longest", "minimum window", "max sum k elements"],
-    insight: "Expand right, shrink left when constraint violated. HashMap tracks counts. Each element enters and leaves the window at most once = O(n).",
-    template: highlightJava(
-`// Sliding Window — variable-size template
-// Key invariant: the window [left, right] always satisfies the constraint.
+    id:"sliding-window", name:"Sliding Window", color:"#FF6B6B", freq:"★★★★★",
+    triggerWords:["substring","subarray","contiguous","at most k","longest","minimum window","max sum k elements"],
+    rule:"Grow the window right. The moment it breaks the rule, shrink it from the left until it's valid again.",
+    diagram:
+`  a  b  c  a  b  c  b  b     find longest with no repeats
+  ↑           ↑
+  L           R               window = "abca" ✗ duplicate 'a'!
+                               → shrink: move L right
 
-public int longestSubstringWithoutRepeating(String s) {
-    Map<Character, Integer> charToIndex = new HashMap<>();
+     b  c  a  b  c  b  b
+     ↑        ↑
+     L        R               window = "bcab" ✗ duplicate 'b'!
+                               → shrink again
+
+        c  a  b  c  b  b
+        ↑     ↑
+        L     R               window = "cab" ✓ valid → keep expanding
+
+        c  a  b  c  b  b
+        ↑        ↑
+        L        R            window = "cabc" ✗ duplicate 'c'!
+
+Key: every element enters once (R++) and leaves once (L++) → O(n)`,
+    insight:"The window [left, right] is your current candidate. right expands it greedily, left repairs it when broken. A HashMap remembers what's inside so you never scan backwards.",
+    template: highlightJava(
+`// Longest substring without repeating characters
+public int lengthOfLongestSubstring(String s) {
+    Map<Character, Integer> lastSeenAt = new HashMap<>();
     int maxLength = 0;
     int left = 0;
 
     for (int right = 0; right < s.length(); right++) {
-        char current = s.charAt(right);
+        char c = s.charAt(right);
 
-        // If we've seen this char inside the current window, shrink from left
-        if (charToIndex.containsKey(current)) {
-            left = Math.max(left, charToIndex.get(current) + 1);
+        if (isInsideWindow(lastSeenAt, c, left)) {
+            left = justPastPreviousOccurrence(lastSeenAt, c);
         }
 
-        charToIndex.put(current, right);
-        maxLength = Math.max(maxLength, right - left + 1);
+        lastSeenAt.put(c, right);
+        maxLength = Math.max(maxLength, windowSize(left, right));
     }
     return maxLength;
 }
 
-// ── Minimum Window Substring — need/have pattern ──
+// Minimum window substring — need/have pattern
 public String minWindow(String s, String t) {
-    Map<Character, Integer> need = new HashMap<>();
-    for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
-
+    Map<Character, Integer> need   = buildFrequencyMap(t);
+    Map<Character, Integer> window = new HashMap<>();
     int have = 0, required = need.size();
     int left = 0, minLen = Integer.MAX_VALUE, minLeft = 0;
-    Map<Character, Integer> window = new HashMap<>();
 
     for (int right = 0; right < s.length(); right++) {
-        char c = s.charAt(right);
-        window.merge(c, 1, Integer::sum);
+        addToWindow(window, s.charAt(right));
+        if (satisfiesNeed(window, need, s.charAt(right))) have++;
 
-        if (need.containsKey(c) && window.get(c).equals(need.get(c))) have++;
-
-        while (have == required) {                         // window is valid — try to shrink
-            if (right - left + 1 < minLen) {
-                minLen = right - left + 1;
+        while (windowIsComplete(have, required)) {
+            if (isShorterThanBest(right, left, minLen)) {
+                minLen = windowSize(left, right);
                 minLeft = left;
             }
-            char leftChar = s.charAt(left++);
-            window.merge(leftChar, -1, Integer::sum);
-            if (need.containsKey(leftChar) && window.get(leftChar) < need.get(leftChar)) have--;
+            if (removingBreaksNeed(window, need, s.charAt(left))) have--;
+            removeFromWindow(window, s.charAt(left++));
         }
     }
     return minLen == Integer.MAX_VALUE ? "" : s.substring(minLeft, minLeft + minLen);
+}
+
+// ── Helpers ──
+private boolean isInsideWindow(Map<Character, Integer> lastSeen, char c, int left) {
+    return lastSeen.containsKey(c) && lastSeen.get(c) >= left;
+}
+private int justPastPreviousOccurrence(Map<Character, Integer> lastSeen, char c) {
+    return lastSeen.get(c) + 1;
+}
+private int windowSize(int left, int right)  { return right - left + 1; }
+private boolean isShorterThanBest(int right, int left, int best) { return windowSize(left, right) < best; }
+private boolean windowIsComplete(int have, int required)         { return have == required; }
+private boolean satisfiesNeed(Map<Character,Integer> win, Map<Character,Integer> need, char c) {
+    return need.containsKey(c) && win.get(c).equals(need.get(c));
+}
+private boolean removingBreaksNeed(Map<Character,Integer> win, Map<Character,Integer> need, char c) {
+    return need.containsKey(c) && win.get(c) <= need.get(c);
+}
+private void addToWindow(Map<Character, Integer> window, char c)    { window.merge(c,  1, Integer::sum); }
+private void removeFromWindow(Map<Character, Integer> window, char c){ window.merge(c, -1, Integer::sum); }
+private Map<Character, Integer> buildFrequencyMap(String s) {
+    Map<Character, Integer> freq = new HashMap<>();
+    for (char c : s.toCharArray()) freq.merge(c, 1, Integer::sum);
+    return freq;
 }`),
-    questions: [
-      { name: "Longest Substring Without Repeating", diff: "Medium", note: "charToIndex map" },
-      { name: "Minimum Window Substring",  diff: "Hard",   note: "need/have counter" },
-      { name: "Longest Repeating Char Replacement", diff: "Medium", note: "windowSize - maxFreq <= k" },
-      { name: "Permutation in String",     diff: "Medium", note: "fixed-size window" },
-      { name: "Fruit Into Baskets",        diff: "Medium", note: "at most 2 distinct" },
+    questions:[
+      {name:"Longest Substring Without Repeating",diff:"Medium",note:"charToIndex map"},
+      {name:"Minimum Window Substring",diff:"Hard",note:"need/have counter"},
+      {name:"Longest Repeating Char Replacement",diff:"Medium",note:"windowSize - maxFreq <= k"},
+      {name:"Permutation in String",diff:"Medium",note:"fixed-size window"},
+      {name:"Fruit Into Baskets",diff:"Medium",note:"at most 2 distinct"},
     ]
   },
   {
-    id: "fast-slow",
-    name: "Fast & Slow Pointers",
-    color: "#A78BFA",
-    freq: "★★★★",
-    triggerWords: ["linked list cycle", "find middle", "palindrome linked list", "happy number", "find duplicate"],
-    insight: "Floyd's cycle detection. Fast moves 2×. If a cycle exists they meet. When fast hits null, slow is at the middle. Reuse to find the palindrome midpoint.",
+    id:"fast-slow", name:"Fast & Slow Pointers", color:"#A78BFA", freq:"★★★★",
+    triggerWords:["linked list cycle","find middle","palindrome linked list","happy number","find duplicate"],
+    rule:"Send two runners into the list. Fast runs at 2x. If there's a loop they'll meet. If there isn't, fast finds the end and slow finds the middle.",
+    diagram:
+`  Cycle detection:
+
+  1 → 2 → 3 → 4 → 5
+              ↑       ↓
+              8 ← 7 ← 6
+
+  Step 1: slow=1  fast=1
+  Step 2: slow=2  fast=3
+  Step 3: slow=3  fast=5
+  Step 4: slow=4  fast=7
+  Step 5: slow=5  fast=5  ← they meet! cycle confirmed ✓
+
+  Find middle (no cycle):
+
+  1 → 2 → 3 → 4 → 5 → null
+  Step 1: slow=1  fast=1
+  Step 2: slow=2  fast=3
+  Step 3: slow=3  fast=5
+  fast.next = null → stop. slow=3 = middle ✓`,
+    insight:"Fast moves 2× so when fast finishes one loop slow has done half. They meet in a cycle because fast laps slow. The meeting point math gives you the cycle entry for free.",
     template: highlightJava(
-`// ListNode definition — standard across all linked list problems
-public class ListNode {
-    int val;
-    ListNode next;
+`public class ListNode {
+    int val; ListNode next;
     ListNode(int val) { this.val = val; }
 }
 
-// ── Detect cycle ──
 public boolean hasCycle(ListNode head) {
     ListNode slow = head;
     ListNode fast = head;
 
-    while (fast != null && fast.next != null) {
+    while (canAdvanceFast(fast)) {
         slow = slow.next;
         fast = fast.next.next;
-        if (slow == fast) return true;   // they met — cycle confirmed
+        if (haveCollided(slow, fast)) return true;
     }
     return false;
 }
 
-// ── Find middle node ──
 public ListNode findMiddle(ListNode head) {
     ListNode slow = head;
     ListNode fast = head;
 
-    while (fast != null && fast.next != null) {
+    while (canAdvanceFast(fast)) {
         slow = slow.next;
         fast = fast.next.next;
     }
-    return slow; // slow is now at the middle
+    return slow;
 }
 
-// ── Palindrome linked list ──
 public boolean isPalindrome(ListNode head) {
-    ListNode middle   = findMiddle(head);
-    ListNode reversed = reverse(middle);   // reverse second half in-place
-    ListNode current  = head;
+    ListNode middle          = findMiddle(head);
+    ListNode reversedSecHalf = reverse(middle);
+    return firstHalfMatches(head, reversedSecHalf);
+}
 
-    while (reversed != null) {
-        if (current.val != reversed.val) return false;
-        current  = current.next;
-        reversed = reversed.next;
+// ── Helpers ──
+private boolean canAdvanceFast(ListNode fast) {
+    return fast != null && fast.next != null;
+}
+private boolean haveCollided(ListNode slow, ListNode fast) {
+    return slow == fast;
+}
+private boolean firstHalfMatches(ListNode a, ListNode b) {
+    while (b != null) {
+        if (a.val != b.val) return false;
+        a = a.next; b = b.next;
     }
     return true;
 }
-
 private ListNode reverse(ListNode head) {
     ListNode prev = null;
     while (head != null) {
@@ -379,57 +435,69 @@ private ListNode reverse(ListNode head) {
     }
     return prev;
 }`),
-    questions: [
-      { name: "Linked List Cycle",       diff: "Easy",   note: "do they meet?" },
-      { name: "Find the Duplicate Number", diff: "Medium", note: "array as linked list" },
-      { name: "Middle of Linked List",   diff: "Easy",   note: "slow stops at mid" },
-      { name: "Palindrome Linked List",  diff: "Easy",   note: "find mid + reverse half" },
-      { name: "Linked List Cycle II",    diff: "Medium", note: "find cycle entry point" },
+    questions:[
+      {name:"Linked List Cycle",diff:"Easy",note:"do they collide?"},
+      {name:"Find the Duplicate Number",diff:"Medium",note:"array indices as linked list"},
+      {name:"Middle of Linked List",diff:"Easy",note:"slow stops at mid"},
+      {name:"Palindrome Linked List",diff:"Easy",note:"find mid + reverse half"},
+      {name:"Linked List Cycle II",diff:"Medium",note:"find cycle entry point"},
     ]
   },
   {
-    id: "bfs-dfs",
-    name: "BFS / DFS",
-    color: "#34D399",
-    freq: "★★★★★",
-    triggerWords: ["shortest path", "level order", "connected components", "islands", "flood fill", "word ladder", "matrix traversal"],
-    insight: "BFS = shortest path via queue, level by level. DFS = explore fully via recursion. Multi-source BFS: seed the queue with all starting nodes simultaneously.",
+    id:"bfs-dfs", name:"BFS / DFS", color:"#34D399", freq:"★★★★★",
+    triggerWords:["shortest path","level order","connected components","islands","flood fill","word ladder","matrix"],
+    rule:"BFS: visit neighbors level by level using a queue — guarantees shortest path. DFS: go as deep as possible first using recursion — great for exhaustive search.",
+    diagram:
+`  BFS — level by level (queue):         DFS — depth first (recursion):
+
+       1                                      1
+      / \\                                    / \\
+     2   3                                  2   3
+    / \\   \\                                / \\   \\
+   4   5   6                              4   5   6
+
+  Visit: 1 → 2,3 → 4,5,6               Visit: 1→2→4→5→3→6
+  Queue: [1] → [2,3] → [4,5,6]         Stack: goes deep then backtracks
+
+  ✓ BFS finds shortest path             ✓ DFS finds all paths / exhaustive
+
+  Grid flood fill (islands):
+  [ 1  1  0  0 ]
+  [ 1  1  0  1 ]   DFS from each '1': sink it to '0', count blobs
+  [ 0  0  1  0 ]   → 3 islands found`,
+    insight:"BFS processes by distance — anything you find first IS the shortest path. DFS commits fully to one direction before backtracking. Multi-source BFS: put all starting nodes in the queue at once.",
     template: highlightJava(
-`// ── BFS — shortest path on an unweighted graph ──
+`// BFS — shortest path
 public int shortestPath(Map<Integer, List<Integer>> graph, int source, int target) {
     Queue<Integer> queue   = new ArrayDeque<>();
     Set<Integer>   visited = new HashSet<>();
 
-    queue.offer(source);
-    visited.add(source);
+    enqueue(queue, visited, source);
     int distance = 0;
 
     while (!queue.isEmpty()) {
-        int levelSize = queue.size();          // process one level at a time
+        int levelSize = queue.size();
 
         for (int i = 0; i < levelSize; i++) {
             int node = queue.poll();
-            if (node == target) return distance;
+            if (isTarget(node, target)) return distance;
 
             for (int neighbor : graph.get(node)) {
-                if (!visited.contains(neighbor)) {
-                    visited.add(neighbor);
-                    queue.offer(neighbor);
-                }
+                if (notVisited(visited, neighbor)) enqueue(queue, visited, neighbor);
             }
         }
         distance++;
     }
-    return -1; // unreachable
+    return -1;
 }
 
-// ── DFS — number of islands (grid flood-fill) ──
+// DFS — number of islands
 public int numIslands(char[][] grid) {
     int islands = 0;
     for (int row = 0; row < grid.length; row++) {
         for (int col = 0; col < grid[0].length; col++) {
-            if (grid[row][col] == '1') {
-                dfsFloodFill(grid, row, col);
+            if (isLand(grid, row, col)) {
+                sinkIsland(grid, row, col);
                 islands++;
             }
         }
@@ -437,128 +505,180 @@ public int numIslands(char[][] grid) {
     return islands;
 }
 
-private void dfsFloodFill(char[][] grid, int row, int col) {
-    boolean outOfBounds = row < 0 || row >= grid.length || col < 0 || col >= grid[0].length;
-    if (outOfBounds || grid[row][col] != '1') return;
+private void sinkIsland(char[][] grid, int row, int col) {
+    if (isOutOfBounds(grid, row, col) || !isLand(grid, row, col)) return;
+    grid[row][col] = '0';
+    sinkIsland(grid, row + 1, col);
+    sinkIsland(grid, row - 1, col);
+    sinkIsland(grid, row, col + 1);
+    sinkIsland(grid, row, col - 1);
+}
 
-    grid[row][col] = '0';                     // mark visited by sinking the island
-    dfsFloodFill(grid, row + 1, col);
-    dfsFloodFill(grid, row - 1, col);
-    dfsFloodFill(grid, row, col + 1);
-    dfsFloodFill(grid, row, col - 1);
+// ── Helpers ──
+private void enqueue(Queue<Integer> q, Set<Integer> visited, int node) {
+    q.offer(node); visited.add(node);
+}
+private boolean isTarget(int node, int target)            { return node == target; }
+private boolean notVisited(Set<Integer> visited, int n)   { return !visited.contains(n); }
+private boolean isLand(char[][] grid, int r, int c)       { return grid[r][c] == '1'; }
+private boolean isOutOfBounds(char[][] grid, int r, int c) {
+    return r < 0 || r >= grid.length || c < 0 || c >= grid[0].length;
 }`),
-    questions: [
-      { name: "Number of Islands",          diff: "Medium", note: "DFS flood fill" },
-      { name: "Rotting Oranges",            diff: "Medium", note: "multi-source BFS" },
-      { name: "Word Ladder",                diff: "Hard",   note: "BFS on implicit graph" },
-      { name: "Clone Graph",                diff: "Medium", note: "DFS + old→new map" },
-      { name: "Pacific Atlantic Water Flow", diff: "Medium", note: "reverse BFS from coasts" },
-      { name: "Max Area of Island",         diff: "Medium", note: "DFS + count cells" },
+    questions:[
+      {name:"Number of Islands",diff:"Medium",note:"DFS flood fill"},
+      {name:"Rotting Oranges",diff:"Medium",note:"multi-source BFS"},
+      {name:"Word Ladder",diff:"Hard",note:"BFS on implicit graph"},
+      {name:"Clone Graph",diff:"Medium",note:"DFS + old→new map"},
+      {name:"Pacific Atlantic Water Flow",diff:"Medium",note:"reverse BFS from coasts"},
+      {name:"Max Area of Island",diff:"Medium",note:"DFS + count cells"},
     ]
   },
   {
-    id: "binary-search",
-    name: "Binary Search",
-    color: "#FBBF24",
-    freq: "★★★★★",
-    triggerWords: ["sorted array", "find minimum", "search rotated", "O(log n)", "kth smallest", "feasible/possible"],
-    insight: "Don't limit to arrays — binary search on the ANSWER SPACE. 'Find minimum X such that condition holds': lo=minVal, hi=maxVal, test feasible(mid). Unlocks a whole class of hard problems.",
+    id:"binary-search", name:"Binary Search", color:"#FBBF24", freq:"★★★★★",
+    triggerWords:["sorted array","find minimum","search rotated","O(log n)","kth smallest","feasible/possible"],
+    rule:"Eliminate half the search space every step. Works on arrays AND on answer spaces — if you can ask 'is X feasible?' you can binary search for the minimum feasible X.",
+    diagram:
+`  Classic — find 7 in sorted array:
+
+  [ 1  3  5  7  9  11  13 ]
+    ↑           ↑         ↑
+   lo          mid        hi     mid=7 ✓ found!
+
+  [ 1  3  5  7  9  11  13 ]
+    ↑     ↑              ↑
+   lo    mid             hi     mid=5 < 7 → lo = mid+1
+
+  Answer-space search (Koko Bananas):
+
+  Speed range:  1 ──────────────────── 11
+                         ↑
+                        mid=6   feasible(6)? yes → hi=6
+
+                1 ───────── 6
+                      ↑
+                     mid=3   feasible(3)? no  → lo=4
+
+                4 ── 6
+                  ↑
+                 mid=5   feasible(5)? yes → hi=5
+
+                4─5   lo==hi → answer = 4`,
+    insight:"Sorted order (or monotonic condition) means: once you know mid is wrong, every element on that side is also wrong. Discard half, repeat. The answer-space variant is the unlock for hard problems.",
     template: highlightJava(
-`// ── Classic binary search ──
+`// Classic binary search
 public int binarySearch(int[] nums, int target) {
     int lo = 0;
     int hi = nums.length - 1;
 
-    while (lo <= hi) {
-        int mid = lo + (hi - lo) / 2;       // avoids overflow vs (lo+hi)/2
+    while (searchSpaceNotEmpty(lo, hi)) {
+        int mid = midpoint(lo, hi);
 
-        if      (nums[mid] == target) return mid;
-        else if (nums[mid]  < target) lo = mid + 1;
-        else                          hi = mid - 1;
+        if      (isTarget(nums[mid], target))    return mid;
+        else if (isBeforeTarget(nums[mid], target)) lo = mid + 1;
+        else                                     hi = mid - 1;
     }
     return -1;
 }
 
-// ── Answer-space binary search — e.g. Koko Eating Bananas ──
-// "Find the minimum speed k such that all piles can be eaten in h hours"
+// Answer-space binary search — Koko Eating Bananas
 public int minEatingSpeed(int[] piles, int h) {
     int lo = 1;
-    int hi = Arrays.stream(piles).max().getAsInt();
+    int hi = maxPile(piles);
 
     while (lo < hi) {
-        int mid = lo + (hi - lo) / 2;
-        if (canFinish(piles, mid, h)) hi = mid;   // mid works — try smaller
-        else                          lo = mid + 1;
+        int mid = midpoint(lo, hi);
+        if (canFinishAtSpeed(piles, mid, h)) hi = mid; // works — try smaller
+        else                                 lo = mid + 1;
     }
     return lo;
 }
 
-private boolean canFinish(int[] piles, int speed, int hoursAllowed) {
-    int hoursNeeded = Arrays.stream(piles)
-        .map(pile -> (int) Math.ceil((double) pile / speed))
-        .sum();
-    return hoursNeeded <= hoursAllowed;
-}
-
-// ── Search in rotated sorted array ──
+// Search in rotated sorted array
 public int searchRotated(int[] nums, int target) {
     int lo = 0, hi = nums.length - 1;
 
-    while (lo <= hi) {
-        int mid = lo + (hi - lo) / 2;
-        if (nums[mid] == target) return mid;
+    while (searchSpaceNotEmpty(lo, hi)) {
+        int mid = midpoint(lo, hi);
+        if (isTarget(nums[mid], target)) return mid;
 
-        boolean leftHalfSorted = nums[lo] <= nums[mid];
-
-        if (leftHalfSorted) {
-            if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
-            else                                          lo = mid + 1;
+        if (leftHalfIsSorted(nums, lo, mid)) {
+            if (targetIsInLeftHalf(nums, lo, mid, target)) hi = mid - 1;
+            else                                           lo = mid + 1;
         } else {
-            if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
-            else                                          hi = mid - 1;
+            if (targetIsInRightHalf(nums, mid, hi, target)) lo = mid + 1;
+            else                                            hi = mid - 1;
         }
     }
     return -1;
-}`),
-    questions: [
-      { name: "Binary Search",                   diff: "Easy",   note: "nail template cold" },
-      { name: "Search in Rotated Sorted Array",  diff: "Medium", note: "which half is sorted?" },
-      { name: "Find Minimum in Rotated Array",   diff: "Medium", note: "find pivot" },
-      { name: "Koko Eating Bananas",             diff: "Medium", note: "search on answer space" },
-      { name: "Median of Two Sorted Arrays",     diff: "Hard",   note: "partition trick" },
+}
+
+// ── Helpers ──
+private boolean searchSpaceNotEmpty(int lo, int hi)       { return lo <= hi; }
+private int     midpoint(int lo, int hi)                  { return lo + (hi - lo) / 2; }
+private boolean isTarget(int val, int target)             { return val == target; }
+private boolean isBeforeTarget(int val, int target)       { return val < target; }
+private int     maxPile(int[] piles)                      { return Arrays.stream(piles).max().getAsInt(); }
+private boolean leftHalfIsSorted(int[] nums, int lo, int mid)    { return nums[lo] <= nums[mid]; }
+private boolean targetIsInLeftHalf(int[] nums, int lo, int mid, int t)  { return nums[lo] <= t && t < nums[mid]; }
+private boolean targetIsInRightHalf(int[] nums, int mid, int hi, int t) { return nums[mid] < t && t <= nums[hi]; }
+private boolean canFinishAtSpeed(int[] piles, int speed, int hours) {
+    int hoursNeeded = Arrays.stream(piles)
+        .map(pile -> hoursToEatPile(pile, speed))
+        .sum();
+    return hoursNeeded <= hours;
+}
+private int hoursToEatPile(int pile, int speed) { return (int) Math.ceil((double) pile / speed); }`),
+    questions:[
+      {name:"Binary Search",diff:"Easy",note:"nail template cold"},
+      {name:"Search in Rotated Sorted Array",diff:"Medium",note:"which half is sorted?"},
+      {name:"Find Min in Rotated Array",diff:"Medium",note:"find pivot"},
+      {name:"Koko Eating Bananas",diff:"Medium",note:"search on answer space"},
+      {name:"Median of Two Sorted Arrays",diff:"Hard",note:"partition trick"},
     ]
   },
   {
-    id: "heap",
-    name: "Heap / Priority Queue",
-    color: "#FB923C",
-    freq: "★★★★",
-    triggerWords: ["top k", "kth largest", "k closest", "merge k sorted", "median stream", "task scheduler"],
-    insight: "Java PriorityQueue is a min-heap by default. Pass Comparator.reverseOrder() for a max-heap. Keep size K → top-K in O(n log k). Two heaps gives O(1) median.",
+    id:"heap", name:"Heap / Priority Queue", color:"#FB923C", freq:"★★★★",
+    triggerWords:["top k","kth largest","k closest","merge k sorted","median stream","task scheduler"],
+    rule:"A heap always gives you the min (or max) in O(1). Keep a size-K heap to maintain the top K elements efficiently as you scan.",
+    diagram:
+`  Top K largest from stream — min-heap of size K:
+
+  K=3, stream: [3, 1, 5, 6, 2, 4]
+
+  Add 3:  heap=[3]          size≤K, no evict
+  Add 1:  heap=[1,3]        size≤K, no evict
+  Add 5:  heap=[1,3,5]      size=K, no evict
+  Add 6:  heap=[1,3,5,6]    size>K → evict min(1) → heap=[3,5,6]
+  Add 2:  heap=[2,3,5,6]    size>K → evict min(2) → heap=[3,5,6]
+  Add 4:  heap=[3,4,5,6]    size>K → evict min(3) → heap=[4,5,6]
+
+  heap.peek() = 4 = 3rd largest ✓
+
+  Running median — two heaps:
+
+  lower [max-heap] | upper [min-heap]
+  keeps left half  | keeps right half
+  ─────────────────┼────────────────
+      [1, 2, 3]    |    [4, 5, 6]
+      peek=3       |    peek=4
+  median = (3+4)/2 = 3.5 ✓`,
+    insight:"Min-heap of size K: anything smaller than the Kth largest gets evicted. What's left IS the top K. The heap.peek() is always the Kth largest — your answer is always O(1) away.",
     template: highlightJava(
-`// ── Kth Largest — min-heap of size K ──
-// Invariant: heap always holds the K largest elements seen so far.
-// heap.peek() is therefore the Kth largest.
+`// Kth largest — min-heap of size K
 public int findKthLargest(int[] nums, int k) {
-    PriorityQueue<Integer> minHeap = new PriorityQueue<>(); // natural order = min-heap
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
 
     for (int num : nums) {
-        minHeap.offer(num);
-        if (minHeap.size() > k) minHeap.poll();   // evict the smallest
+        addToHeap(minHeap, num);
+        if (heapExceedsLimit(minHeap, k)) evictSmallest(minHeap);
     }
-    return minHeap.peek();                         // Kth largest remains
+    return minHeap.peek();
 }
 
-// ── Merge K Sorted Lists ──
+// Merge K sorted lists
 public ListNode mergeKLists(ListNode[] lists) {
-    // Order by node value — smallest value gets highest priority
-    PriorityQueue<ListNode> minHeap =
-        new PriorityQueue<>(Comparator.comparingInt(node -> node.val));
-
-    // Seed heap with the head of every list
-    Arrays.stream(lists)
-          .filter(Objects::nonNull)
-          .forEach(minHeap::offer);
+    PriorityQueue<ListNode> minHeap = buildNodeHeap();
+    seedWithHeads(minHeap, lists);
 
     ListNode dummy = new ListNode(0);
     ListNode tail  = dummy;
@@ -566,515 +686,698 @@ public ListNode mergeKLists(ListNode[] lists) {
     while (!minHeap.isEmpty()) {
         tail.next = minHeap.poll();
         tail = tail.next;
-        if (tail.next != null) minHeap.offer(tail.next); // advance that list
+        if (hasNext(tail)) minHeap.offer(tail.next);
     }
     return dummy.next;
 }
 
-// ── Find Median from Data Stream — two-heap approach ──
+// Running median — two heaps
 class MedianFinder {
-    private final PriorityQueue<Integer> lowerHalf = new PriorityQueue<>(Comparator.reverseOrder()); // max-heap
-    private final PriorityQueue<Integer> upperHalf = new PriorityQueue<>();                           // min-heap
+    private final PriorityQueue<Integer> lowerHalf = new PriorityQueue<>(Comparator.reverseOrder());
+    private final PriorityQueue<Integer> upperHalf = new PriorityQueue<>();
 
     public void addNum(int num) {
         lowerHalf.offer(num);
-        upperHalf.offer(lowerHalf.poll());          // balance: push smallest of lower into upper
-
-        if (lowerHalf.size() < upperHalf.size()) {
-            lowerHalf.offer(upperHalf.poll());       // keep lowerHalf >= upperHalf in size
-        }
+        upperHalf.offer(lowerHalf.poll());        // push smallest of lower into upper
+        if (lowerIsSmaller()) upperHalf.offer(upperHalf.poll()); // rebalance — wait, reverse
+        if (lowerIsSmaller()) lowerHalf.offer(upperHalf.poll());
     }
 
     public double findMedian() {
-        return lowerHalf.size() > upperHalf.size()
-            ? lowerHalf.peek()
-            : (lowerHalf.peek() + upperHalf.peek()) / 2.0;
+        return isEvenSplit()
+            ? averageOfTops()
+            : (double) lowerHalf.peek();
     }
+
+    private boolean lowerIsSmaller() { return lowerHalf.size() < upperHalf.size(); }
+    private boolean isEvenSplit()    { return lowerHalf.size() == upperHalf.size(); }
+    private double  averageOfTops()  { return (lowerHalf.peek() + upperHalf.peek()) / 2.0; }
+}
+
+// ── Helpers ──
+private void addToHeap(PriorityQueue<Integer> heap, int val) { heap.offer(val); }
+private boolean heapExceedsLimit(PriorityQueue<Integer> heap, int k) { return heap.size() > k; }
+private void evictSmallest(PriorityQueue<Integer> heap) { heap.poll(); }
+private boolean hasNext(ListNode node) { return node.next != null; }
+private PriorityQueue<ListNode> buildNodeHeap() {
+    return new PriorityQueue<>(Comparator.comparingInt(node -> node.val));
+}
+private void seedWithHeads(PriorityQueue<ListNode> heap, ListNode[] lists) {
+    Arrays.stream(lists).filter(Objects::nonNull).forEach(heap::offer);
 }`),
-    questions: [
-      { name: "Kth Largest Element",          diff: "Medium", note: "min-heap size K" },
-      { name: "Top K Frequent Elements",      diff: "Medium", note: "PQ on frequency" },
-      { name: "Merge K Sorted Lists",         diff: "Hard",   note: "PQ on node.val" },
-      { name: "Find Median from Data Stream", diff: "Hard",   note: "max-heap + min-heap" },
-      { name: "K Closest Points to Origin",  diff: "Medium", note: "max-heap on distance" },
+    questions:[
+      {name:"Kth Largest Element",diff:"Medium",note:"min-heap size K"},
+      {name:"Top K Frequent Elements",diff:"Medium",note:"PQ on frequency"},
+      {name:"Merge K Sorted Lists",diff:"Hard",note:"PQ on node.val"},
+      {name:"Find Median from Data Stream",diff:"Hard",note:"lower + upper heaps"},
+      {name:"K Closest Points to Origin",diff:"Medium",note:"max-heap on distance"},
     ]
   },
   {
-    id: "dp",
-    name: "Dynamic Programming",
-    color: "#F472B6",
-    freq: "★★★★★",
-    triggerWords: ["max/min result", "count ways", "is it possible", "subsequence", "partition", "knapsack", "how many paths"],
-    insight: "Can I express this as a recurrence on smaller reusable subproblems? Start with top-down (memoization), convert to bottom-up (tabulation) for space optimization.",
-    template: highlightJava(
-`// ── House Robber — 1D DP ──
-// dp[i] = max money robbed from houses 0..i
-// Either skip house i (dp[i-1]) or rob it and skip i-1 (dp[i-2] + nums[i])
-public int rob(int[] nums) {
-    if (nums.length == 1) return nums[0];
+    id:"dp", name:"Dynamic Programming", color:"#F472B6", freq:"★★★★★",
+    triggerWords:["max/min result","count ways","is it possible","subsequence","partition","knapsack","how many paths"],
+    rule:"Break the problem into smaller identical subproblems. Cache answers so you never solve the same subproblem twice.",
+    diagram:
+`  House Robber: [2, 7, 9, 3, 1]
+  Rule: can't rob adjacent houses. Maximize loot.
 
-    int twoBack = nums[0];
-    int oneBack = Math.max(nums[0], nums[1]);
+  At each house: rob it (skip previous) OR skip it (keep previous best)
+
+  House:    2    7    9    3    1
+            ↓    ↓    ↓    ↓    ↓
+  best:     2    7   11   11   12
+                      ↑
+                 rob(9) + best(2) = 11
+                 skip(9) → keep 7
+                 max(11, 7) = 11 ✓
+
+  LCS — 2D table: text1="abcde", text2="ace"
+         ""  a  c  e
+    ""  [ 0  0  0  0 ]
+    a   [ 0  1  1  1 ]   chars match → extend diagonal
+    b   [ 0  1  1  1 ]   no match   → max(left, above)
+    c   [ 0  1  2  2 ]
+    d   [ 0  1  2  2 ]
+    e   [ 0  1  2  3 ]  ← answer: LCS length = 3`,
+    insight:"If the same subproblem appears multiple times in your recursion tree, DP will save you. Start with recursion + @lru_cache to verify correctness, then convert to a table for space wins.",
+    template: highlightJava(
+`// House Robber — space-optimized 1D DP
+public int rob(int[] nums) {
+    if (hasSingleHouse(nums)) return nums[0];
+
+    int bestWithoutPrevious = nums[0];
+    int bestUpToCurrent     = Math.max(nums[0], nums[1]);
 
     for (int i = 2; i < nums.length; i++) {
-        int current = Math.max(oneBack, twoBack + nums[i]);
-        twoBack = oneBack;
-        oneBack = current;
+        int robCurrent  = bestWithoutPrevious + nums[i];
+        int skipCurrent = bestUpToCurrent;
+        int newBest     = Math.max(robCurrent, skipCurrent);
+
+        bestWithoutPrevious = bestUpToCurrent;
+        bestUpToCurrent     = newBest;
     }
-    return oneBack;
+    return bestUpToCurrent;
 }
 
-// ── Longest Common Subsequence — 2D DP ──
-// dp[i][j] = LCS length of text1[0..i-1] and text2[0..j-1]
+// Longest Common Subsequence — 2D DP
 public int longestCommonSubsequence(String text1, String text2) {
     int m = text1.length(), n = text2.length();
     int[][] dp = new int[m + 1][n + 1];
 
     for (int i = 1; i <= m; i++) {
         for (int j = 1; j <= n; j++) {
-            if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;          // chars match — extend
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // take best of skipping either
-            }
+            if (charsMatch(text1, i, text2, j)) dp[i][j] = extendMatch(dp, i, j);
+            else                                dp[i][j] = bestOfSkippingEither(dp, i, j);
         }
     }
     return dp[m][n];
 }
 
-// ── Coin Change — unbounded knapsack ──
-// dp[amount] = fewest coins to make up 'amount'
+// Coin Change — unbounded knapsack
 public int coinChange(int[] coins, int amount) {
-    int[] dp = new int[amount + 1];
-    Arrays.fill(dp, amount + 1);   // sentinel: impossible value
-    dp[0] = 0;
+    int[] minCoins = buildDpArray(amount);
 
     for (int current = 1; current <= amount; current++) {
         for (int coin : coins) {
-            if (coin <= current) {
-                dp[current] = Math.min(dp[current], dp[current - coin] + 1);
+            if (coinFits(coin, current)) {
+                minCoins[current] = Math.min(minCoins[current], minCoins[current - coin] + 1);
             }
         }
     }
-    return dp[amount] > amount ? -1 : dp[amount];
-}`),
-    questions: [
-      { name: "Climbing Stairs",                  diff: "Easy",   note: "Fibonacci structure" },
-      { name: "House Robber",                     diff: "Medium", note: "twoBack / oneBack rolling" },
-      { name: "Longest Common Subsequence",       diff: "Medium", note: "classic 2D dp" },
-      { name: "Coin Change",                      diff: "Medium", note: "unbounded knapsack" },
-      { name: "Word Break",                       diff: "Medium", note: "dp[i] = dp[j] + dict.contains" },
-      { name: "Longest Increasing Subsequence",   diff: "Medium", note: "O(n log n) patience sort" },
+    return isReachable(minCoins, amount) ? minCoins[amount] : -1;
+}
+
+// ── Helpers ──
+private boolean hasSingleHouse(int[] nums)              { return nums.length == 1; }
+private boolean charsMatch(String a, int i, String b, int j) { return a.charAt(i-1) == b.charAt(j-1); }
+private int     extendMatch(int[][] dp, int i, int j)   { return dp[i-1][j-1] + 1; }
+private int     bestOfSkippingEither(int[][] dp, int i, int j) { return Math.max(dp[i-1][j], dp[i][j-1]); }
+private int[]   buildDpArray(int amount) {
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, amount + 1); // sentinel: "impossible"
+    dp[0] = 0;
+    return dp;
+}
+private boolean coinFits(int coin, int current)         { return coin <= current; }
+private boolean isReachable(int[] dp, int amount)       { return dp[amount] <= amount; }`),
+    questions:[
+      {name:"Climbing Stairs",diff:"Easy",note:"Fibonacci structure"},
+      {name:"House Robber",diff:"Medium",note:"rob or skip rolling vars"},
+      {name:"Longest Common Subsequence",diff:"Medium",note:"classic 2D dp"},
+      {name:"Coin Change",diff:"Medium",note:"unbounded knapsack"},
+      {name:"Word Break",diff:"Medium",note:"dp[i] = dp[j] + dict.contains"},
+      {name:"Longest Increasing Subsequence",diff:"Medium",note:"O(n log n) patience sort"},
     ]
   },
   {
-    id: "stack",
-    name: "Stack / Monotonic Stack",
-    color: "#2DD4BF",
-    freq: "★★★★",
-    triggerWords: ["next greater element", "previous smaller", "valid parentheses", "daily temperatures", "largest rectangle"],
-    insight: "When pushing, pop everything that violates monotonic order — each pop resolves an answer for that element. All elements enter/leave once = O(n). Always store indices.",
+    id:"stack", name:"Stack / Monotonic Stack", color:"#2DD4BF", freq:"★★★★",
+    triggerWords:["next greater element","previous smaller","valid parentheses","daily temperatures","largest rectangle"],
+    rule:"Push indices onto the stack. When the current element breaks the monotonic order, pop and resolve — the current element IS the answer for what you just popped.",
+    diagram:
+`  Daily Temperatures: [73, 74, 75, 71, 69, 72, 76, 73]
+  Goal: days until warmer temperature
+
+  Stack holds indices of "waiting" days (decreasing temps)
+
+  i=0 temp=73: stack=[0]
+  i=1 temp=74: 74>73 → pop 0, answer[0]=1-0=1   stack=[1]
+  i=2 temp=75: 75>74 → pop 1, answer[1]=2-1=1   stack=[2]
+  i=3 temp=71: 71<75 → just push              stack=[2,3]
+  i=4 temp=69: 69<71 → just push           stack=[2,3,4]
+  i=5 temp=72: 72>69 → pop 4, answer[4]=5-4=1   stack=[2,3]
+               72>71 → pop 3, answer[3]=5-3=2   stack=[2]
+               72<75 → push                   stack=[2,5]
+  i=6 temp=76: 76>72 → pop 5, answer[5]=6-5=1   stack=[2]
+               76>75 → pop 2, answer[2]=6-2=4   stack=[]
+               push                            stack=[6]
+  i=7 temp=73: 73<76 → push                  stack=[6,7]
+
+  answer = [1, 1, 4, 2, 1, 1, 0, 0] ✓`,
+    insight:"The stack is a waiting room for unresolved elements. Each element waits until something bigger arrives. That arrival IS its answer. Because every element enters and leaves once, it's O(n).",
     template: highlightJava(
-`// ── Valid Parentheses ──
+`// Valid Parentheses
 public boolean isValid(String s) {
     Deque<Character> stack = new ArrayDeque<>();
-    Map<Character, Character> matching = Map.of(')', '(', ']', '[', '}', '{');
+    Map<Character, Character> matchingOpen = Map.of(')', '(', ']', '[', '}', '{');
 
     for (char c : s.toCharArray()) {
-        if (!matching.containsKey(c)) {
-            stack.push(c);                              // opening bracket
+        if (isOpenBracket(c, matchingOpen)) {
+            stack.push(c);
         } else {
-            if (stack.isEmpty() || stack.peek() != matching.get(c)) return false;
+            if (stackIsEmpty(stack) || topDoesNotMatch(stack, matchingOpen, c)) return false;
             stack.pop();
         }
     }
     return stack.isEmpty();
 }
 
-// ── Daily Temperatures — monotonic decreasing stack ──
-// For each day, how many days until a warmer temperature?
-public int[] dailyTemperatures(int[] temperatures) {
-    int[] result = new int[temperatures.length];
-    Deque<Integer> stack = new ArrayDeque<>();  // stores indices, not values
+// Daily Temperatures — monotonic decreasing stack
+public int[] dailyTemperatures(int[] temps) {
+    int[] daysToWarm = new int[temps.length];
+    Deque<Integer> waitingDays = new ArrayDeque<>(); // indices of unresolved days
 
-    for (int today = 0; today < temperatures.length; today++) {
-        // Pop days that are colder than today — today is their "next warmer day"
-        while (!stack.isEmpty() && temperatures[stack.peek()] < temperatures[today]) {
-            int coldDay = stack.pop();
-            result[coldDay] = today - coldDay;
+    for (int today = 0; today < temps.length; today++) {
+        while (warmerDayArrived(waitingDays, temps, today)) {
+            int coldDay = waitingDays.pop();
+            daysToWarm[coldDay] = daysUntilWarmer(coldDay, today);
         }
-        stack.push(today);
+        waitingDays.push(today);
     }
-    return result;
+    return daysToWarm;
 }
 
-// ── Largest Rectangle in Histogram ──
+// Largest Rectangle in Histogram
 public int largestRectangleArea(int[] heights) {
-    Deque<Integer> stack = new ArrayDeque<>();  // monotonic increasing by height
+    Deque<Integer> stack = new ArrayDeque<>();
     int maxArea = 0;
-    int n = heights.length;
 
-    for (int i = 0; i <= n; i++) {
-        int currentHeight = (i == n) ? 0 : heights[i]; // sentinel forces remaining pops
+    for (int i = 0; i <= heights.length; i++) {
+        int currentHeight = isSentinel(i, heights) ? 0 : heights[i];
 
-        while (!stack.isEmpty() && heights[stack.peek()] > currentHeight) {
+        while (stackHasHigherBar(stack, heights, currentHeight)) {
             int height = heights[stack.pop()];
-            int width  = stack.isEmpty() ? i : i - stack.peek() - 1;
+            int width  = widthOfRectangle(stack, i);
             maxArea = Math.max(maxArea, height * width);
         }
         stack.push(i);
     }
     return maxArea;
+}
+
+// ── Helpers ──
+private boolean isOpenBracket(char c, Map<Character, Character> map) { return !map.containsKey(c); }
+private boolean stackIsEmpty(Deque<?> stack)                          { return stack.isEmpty(); }
+private boolean topDoesNotMatch(Deque<Character> stack, Map<Character,Character> map, char c) {
+    return stack.peek() != map.get(c);
+}
+private boolean warmerDayArrived(Deque<Integer> waiting, int[] temps, int today) {
+    return !waiting.isEmpty() && temps[waiting.peek()] < temps[today];
+}
+private int daysUntilWarmer(int coldDay, int today) { return today - coldDay; }
+private boolean isSentinel(int i, int[] heights)    { return i == heights.length; }
+private boolean stackHasHigherBar(Deque<Integer> stack, int[] heights, int current) {
+    return !stack.isEmpty() && heights[stack.peek()] > current;
+}
+private int widthOfRectangle(Deque<Integer> stack, int i) {
+    return stack.isEmpty() ? i : i - stack.peek() - 1;
 }`),
-    questions: [
-      { name: "Valid Parentheses",              diff: "Easy",  note: "Map for matching pairs" },
-      { name: "Daily Temperatures",             diff: "Medium", note: "mono stack of indices" },
-      { name: "Largest Rectangle in Histogram", diff: "Hard",  note: "sentinel forces final pops" },
-      { name: "Min Stack",                      diff: "Medium", note: "Deque<int[]> store [val, min]" },
-      { name: "Decode String",                  diff: "Medium", note: "push state on '[', pop on ']'" },
+    questions:[
+      {name:"Valid Parentheses",diff:"Easy",note:"Map for matching pairs"},
+      {name:"Daily Temperatures",diff:"Medium",note:"mono stack of waiting days"},
+      {name:"Largest Rectangle in Histogram",diff:"Hard",note:"sentinel forces final pops"},
+      {name:"Min Stack",diff:"Medium",note:"store [val, curMin] pairs"},
+      {name:"Decode String",diff:"Medium",note:"push state on [, pop on ]"},
     ]
   },
   {
-    id: "backtracking",
-    name: "Backtracking",
-    color: "#A3E635",
-    freq: "★★★★",
-    triggerWords: ["all combinations", "all permutations", "generate all", "subsets", "word search grid", "N-queens", "sudoku"],
-    insight: "DFS + undo. Choose → recurse → unchoose. The undo step is what makes it backtracking. Prune early. Always copy the path when adding to the result.",
+    id:"backtracking", name:"Backtracking", color:"#A3E635", freq:"★★★★",
+    triggerWords:["all combinations","all permutations","generate all","subsets","word search grid","N-queens","sudoku"],
+    rule:"Make a choice, recurse deeper, then undo the choice. Explore every branch of the decision tree, but prune branches you know can't succeed.",
+    diagram:
+`  Subsets of [1, 2, 3]:
+
+  start
+  ├── include 1
+  │   ├── include 2
+  │   │   ├── include 3  → [1,2,3] ✓
+  │   │   └── skip 3     → [1,2]   ✓
+  │   └── skip 2
+  │       ├── include 3  → [1,3]   ✓
+  │       └── skip 3     → [1]     ✓
+  └── skip 1
+      ├── include 2
+      │   ├── include 3  → [2,3]   ✓
+      │   └── skip 3     → [2]     ✓
+      └── skip 2
+          ├── include 3  → [3]     ✓
+          └── skip 3     → []      ✓
+
+  Each leaf = one valid answer
+  Always copy path[] before adding — it's mutated on the way back up`,
+    insight:"The call stack IS your undo mechanism. You mutate the path going down, collect the answer at the leaf, then un-mutate on the way back up. That un-mutate is the 'backtrack' step.",
     template: highlightJava(
-`// ── Combination Sum — reuse elements allowed ──
+`// Combination Sum — reuse elements allowed
 public List<List<Integer>> combinationSum(int[] candidates, int target) {
-    List<List<Integer>> result = new ArrayList<>();
     Arrays.sort(candidates);
-    backtrack(candidates, target, 0, new ArrayList<>(), result);
-    return result;
+    List<List<Integer>> results = new ArrayList<>();
+    findCombinations(candidates, target, 0, new ArrayList<>(), results);
+    return results;
 }
 
-private void backtrack(int[] candidates, int remaining, int start,
-                       List<Integer> current, List<List<Integer>> result) {
-    if (remaining == 0) {
-        result.add(new ArrayList<>(current));   // copy — current is mutated
+private void findCombinations(int[] candidates, int remaining, int startIndex,
+                               List<Integer> current, List<List<Integer>> results) {
+    if (targetReached(remaining)) {
+        results.add(copyOf(current));
         return;
     }
+    for (int i = startIndex; i < candidates.length; i++) {
+        if (exceedsTarget(candidates[i], remaining)) break; // sorted → prune rest too
 
-    for (int i = start; i < candidates.length; i++) {
-        if (candidates[i] > remaining) break;   // sorted → prune entire suffix
-
-        current.add(candidates[i]);
-        backtrack(candidates, remaining - candidates[i], i, current, result); // i, not i+1: reuse allowed
-        current.remove(current.size() - 1);     // UNDO
+        choose(current, candidates[i]);
+        findCombinations(candidates, remaining - candidates[i], i, current, results);
+        unchoose(current); // ← this is the backtrack
     }
 }
 
-// ── N-Queens — constraint sets eliminate O(n) validity checks ──
+// N-Queens — 3 constraint sets eliminate O(n) validity scan
 public List<List<String>> solveNQueens(int n) {
-    List<List<String>> result = new ArrayList<>();
-    Set<Integer> cols  = new HashSet<>();
-    Set<Integer> diag1 = new HashSet<>();   // row - col is constant on each diagonal
-    Set<Integer> diag2 = new HashSet<>();   // row + col is constant on each anti-diagonal
-    int[] queens = new int[n];              // queens[row] = col of queen in that row
+    List<List<String>> solutions = new ArrayList<>();
+    int[] queenInRow = new int[n];
+    Set<Integer> occupiedCols  = new HashSet<>();
+    Set<Integer> occupiedDiag1 = new HashSet<>(); // row - col
+    Set<Integer> occupiedDiag2 = new HashSet<>(); // row + col
 
-    placeQueens(0, n, queens, cols, diag1, diag2, result);
-    return result;
+    placeNextQueen(0, n, queenInRow, occupiedCols, occupiedDiag1, occupiedDiag2, solutions);
+    return solutions;
 }
 
-private void placeQueens(int row, int n, int[] queens,
-                         Set<Integer> cols, Set<Integer> diag1, Set<Integer> diag2,
-                         List<List<String>> result) {
-    if (row == n) {
-        result.add(buildBoard(queens, n));
+private void placeNextQueen(int row, int n, int[] queenInRow,
+    Set<Integer> cols, Set<Integer> diag1, Set<Integer> diag2, List<List<String>> solutions) {
+    if (allRowsFilled(row, n)) {
+        solutions.add(buildBoard(queenInRow, n));
         return;
     }
-
     for (int col = 0; col < n; col++) {
-        if (cols.contains(col) || diag1.contains(row - col) || diag2.contains(row + col)) continue;
+        if (isThreatened(row, col, cols, diag1, diag2)) continue;
 
-        cols.add(col);  diag1.add(row - col);  diag2.add(row + col);
-        queens[row] = col;
-
-        placeQueens(row + 1, n, queens, cols, diag1, diag2, result);
-
-        cols.remove(col);  diag1.remove(row - col);  diag2.remove(row + col);  // UNDO
+        placeQueen(row, col, queenInRow, cols, diag1, diag2);
+        placeNextQueen(row + 1, n, queenInRow, cols, diag1, diag2, solutions);
+        removeQueen(row, col, cols, diag1, diag2); // ← backtrack
     }
 }
 
-private List<String> buildBoard(int[] queens, int n) {
-    return IntStream.range(0, n)
-        .mapToObj(row -> {
-            char[] rowArr = new char[n];
-            Arrays.fill(rowArr, '.');
-            rowArr[queens[row]] = 'Q';
-            return new String(rowArr);
-        })
-        .collect(Collectors.toList());
+// ── Helpers ──
+private boolean targetReached(int remaining)        { return remaining == 0; }
+private boolean exceedsTarget(int val, int target)  { return val > target; }
+private void    choose(List<Integer> path, int val) { path.add(val); }
+private void    unchoose(List<Integer> path)        { path.remove(path.size() - 1); }
+private List<Integer> copyOf(List<Integer> path)   { return new ArrayList<>(path); }
+private boolean allRowsFilled(int row, int n)       { return row == n; }
+private boolean isThreatened(int row, int col, Set<Integer> cols, Set<Integer> d1, Set<Integer> d2) {
+    return cols.contains(col) || d1.contains(row - col) || d2.contains(row + col);
+}
+private void placeQueen(int row, int col, int[] queens, Set<Integer> c, Set<Integer> d1, Set<Integer> d2) {
+    queens[row] = col; c.add(col); d1.add(row - col); d2.add(row + col);
+}
+private void removeQueen(int row, int col, Set<Integer> c, Set<Integer> d1, Set<Integer> d2) {
+    c.remove(col); d1.remove(row - col); d2.remove(row + col);
 }`),
-    questions: [
-      { name: "Subsets",          diff: "Medium", note: "include/exclude each element" },
-      { name: "Permutations",     diff: "Medium", note: "boolean[] used array" },
-      { name: "Combination Sum",  diff: "Medium", note: "reuse allowed, prune > target" },
-      { name: "Word Search",      diff: "Medium", note: "DFS on grid, mark/unmark" },
-      { name: "N-Queens",         diff: "Hard",   note: "3 sets for O(1) validity" },
+    questions:[
+      {name:"Subsets",diff:"Medium",note:"include/exclude each element"},
+      {name:"Permutations",diff:"Medium",note:"boolean[] used array"},
+      {name:"Combination Sum",diff:"Medium",note:"reuse, prune > target"},
+      {name:"Word Search",diff:"Medium",note:"DFS on grid, mark/unmark"},
+      {name:"N-Queens",diff:"Hard",note:"3 sets for O(1) validity"},
     ]
   },
   {
-    id: "intervals",
-    name: "Intervals",
-    color: "#F87171",
-    freq: "★★★★",
-    triggerWords: ["merge intervals", "insert interval", "meeting rooms", "overlap", "schedule", "non-overlapping"],
-    insight: "Sort by start. Overlap when next.start <= curr.end. Merge by extending end. Count simultaneous meetings with a min-heap on end times — heap size equals rooms needed.",
+    id:"intervals", name:"Intervals", color:"#F87171", freq:"★★★★",
+    triggerWords:["merge intervals","insert interval","meeting rooms","overlap","schedule","non-overlapping"],
+    rule:"Sort by start time. Two intervals overlap when the next one starts before the current one ends. Merge by stretching the end. Count rooms by tracking when the earliest meeting finishes.",
+    diagram:
+`  Merge Intervals: [[1,3],[2,6],[8,10],[15,18]]
+
+  After sort by start:
+  [1,3]  [2,6]  [8,10]  [15,18]
+    ↑      ↑
+    current  next.start(2) <= current.end(3) → OVERLAP → merge to [1,6]
+
+  [1,6]  [8,10]  [15,18]
+    ↑       ↑
+    next.start(8) > current.end(6) → no overlap → keep both
+
+  Result: [[1,6],[8,10],[15,18]] ✓
+
+  Meeting Rooms II (min rooms needed):
+
+  Meetings sorted by start: [0,30][5,10][15,20]
+  Min-heap tracks end times of active meetings
+
+  [0,30]: heap=[30]          1 room
+  [5,10]: 5 < 30 (busy)  heap=[10,30]    2 rooms
+  [15,20]:15 > 10 (free!) heap=[20,30]   still 2 rooms
+
+  Answer: heap.size() = 2 ✓`,
+    insight:"Sorting by start time lets you process intervals left to right. The heap of end times tells you which rooms are free at any moment — if the earliest-ending meeting finishes before you start, reuse that room.",
     template: highlightJava(
-`// Interval as a simple record (Java 16+) — clean and immutable
-record Interval(int start, int end) {}
+`record Interval(int start, int end) {}
 
-// ── Merge Intervals ──
+// Merge overlapping intervals
 public int[][] merge(int[][] intervals) {
-    Arrays.sort(intervals, Comparator.comparingInt(iv -> iv[0]));
-
+    sortByStartTime(intervals);
     List<int[]> merged = new ArrayList<>();
     merged.add(intervals[0]);
 
     for (int[] current : intervals) {
-        int[] last = merged.get(merged.size() - 1);
+        int[] last = lastMerged(merged);
 
-        if (current[0] <= last[1]) {
-            last[1] = Math.max(last[1], current[1]);   // extend end
-        } else {
-            merged.add(current);                        // no overlap — new interval
-        }
+        if (overlaps(current, last)) extendEnd(last, current);
+        else                         merged.add(current);
     }
     return merged.toArray(new int[0][]);
 }
 
-// ── Meeting Rooms II — minimum rooms needed ──
+// Minimum meeting rooms needed
 public int minMeetingRooms(int[][] intervals) {
-    Arrays.sort(intervals, Comparator.comparingInt(iv -> iv[0]));
-
-    // Min-heap tracks end times of ongoing meetings
-    PriorityQueue<Integer> endTimes = new PriorityQueue<>();
+    sortByStartTime(intervals);
+    PriorityQueue<Integer> roomsInUse = new PriorityQueue<>(); // tracks end times
 
     for (int[] meeting : intervals) {
-        if (!endTimes.isEmpty() && endTimes.peek() <= meeting[0]) {
-            endTimes.poll();   // a room freed up — reuse it
-        }
-        endTimes.offer(meeting[1]);
+        if (aRoomJustFreedUp(roomsInUse, meeting)) reuseRoom(roomsInUse);
+        bookRoom(roomsInUse, meeting);
     }
-    return endTimes.size();    // rooms still occupied = rooms needed
-}`),
-    questions: [
-      { name: "Merge Intervals",          diff: "Medium", note: "sort + extend end" },
-      { name: "Insert Interval",          diff: "Medium", note: "find overlap zone" },
-      { name: "Meeting Rooms II",         diff: "Medium", note: "PQ on end times" },
-      { name: "Non-overlapping Intervals", diff: "Medium", note: "greedy: keep earliest end" },
+    return roomsInUse.size();
+}
+
+// ── Helpers ──
+private void sortByStartTime(int[][] intervals) {
+    Arrays.sort(intervals, Comparator.comparingInt(iv -> iv[0]));
+}
+private int[]   lastMerged(List<int[]> merged)           { return merged.get(merged.size() - 1); }
+private boolean overlaps(int[] current, int[] last)      { return current[0] <= last[1]; }
+private void    extendEnd(int[] last, int[] current)     { last[1] = Math.max(last[1], current[1]); }
+private boolean aRoomJustFreedUp(PriorityQueue<Integer> rooms, int[] meeting) {
+    return !rooms.isEmpty() && rooms.peek() <= meeting[0];
+}
+private void reuseRoom(PriorityQueue<Integer> rooms)     { rooms.poll(); }
+private void bookRoom(PriorityQueue<Integer> rooms, int[] meeting) { rooms.offer(meeting[1]); }`),
+    questions:[
+      {name:"Merge Intervals",diff:"Medium",note:"sort + extendEnd"},
+      {name:"Insert Interval",diff:"Medium",note:"find overlap zone"},
+      {name:"Meeting Rooms II",diff:"Medium",note:"PQ on end times"},
+      {name:"Non-overlapping Intervals",diff:"Medium",note:"greedy: keep earliest end"},
     ]
   },
   {
-    id: "trie",
-    name: "Trie / Prefix Tree",
-    color: "#818CF8",
-    freq: "★★★",
-    triggerWords: ["prefix search", "autocomplete", "starts with", "add and search words", "word search dictionary"],
-    insight: "Each node represents one character. children maps char to TrieNode. isEnd flags word completion. Insert O(L), Search O(L). Wildcard '.' requires DFS through all children.",
+    id:"trie", name:"Trie / Prefix Tree", color:"#818CF8", freq:"★★★",
+    triggerWords:["prefix search","autocomplete","starts with","add and search words","word search dictionary"],
+    rule:"Build a tree where each edge is one character. Walking a path spells a word. isEnd marks where valid words finish.",
+    diagram:
+`  Insert: "cat", "car", "card", "care", "bat"
+
+          root
+         /    \\
+        c      b
+        |      |
+        a      a
+       / \\     |
+      t   r    t
+      ✓   |    ✓  "bat" ends here
+         / \\
+        d   e
+        ✓   ✓   "card" and "care" end here
+
+  search("car")   → walk c→a→r, isEnd=false → false
+  search("card")  → walk c→a→r→d, isEnd=true  → true ✓
+  startsWith("ca")→ walk c→a, node exists     → true ✓
+
+  Wildcard "ca." → at '.', try ALL children of 'a' (t and r)`,
+    insight:"Each path from root to an isEnd node spells a valid word. Prefix search is free — just walk and check if the node exists. The power is O(L) insert and search regardless of dictionary size.",
     template: highlightJava(
-`// TrieNode as a clean inner class
-class Trie {
+`class Trie {
 
     private static class TrieNode {
         Map<Character, TrieNode> children = new HashMap<>();
         boolean isEnd = false;
+
+        boolean hasChild(char c)               { return children.containsKey(c); }
+        TrieNode getChild(char c)              { return children.get(c); }
+        TrieNode addChild(char c)              { return children.computeIfAbsent(c, k -> new TrieNode()); }
+        Collection<TrieNode> allChildren()     { return children.values(); }
+        void markAsWordEnd()                   { isEnd = true; }
     }
 
     private final TrieNode root = new TrieNode();
 
     public void insert(String word) {
-        TrieNode current = root;
-        for (char c : word.toCharArray()) {
-            current = current.children.computeIfAbsent(c, k -> new TrieNode());
-        }
-        current.isEnd = true;
+        TrieNode node = root;
+        for (char c : word.toCharArray()) node = node.addChild(c);
+        node.markAsWordEnd();
     }
 
     public boolean search(String word) {
-        TrieNode node = findNode(word);
-        return node != null && node.isEnd;
+        TrieNode node = walkTo(word);
+        return nodeExists(node) && node.isEnd;
     }
 
     public boolean startsWith(String prefix) {
-        return findNode(prefix) != null;
+        return nodeExists(walkTo(prefix));
     }
 
-    // Shared traversal logic — avoids code duplication
-    private TrieNode findNode(String prefix) {
-        TrieNode current = root;
+    // Wildcard search: '.' matches any character
+    public boolean searchWithWildcard(String word) {
+        return matchFrom(root, word, 0);
+    }
+
+    private boolean matchFrom(TrieNode node, String word, int index) {
+        if (reachedEnd(word, index)) return node.isEnd;
+
+        char c = word.charAt(index);
+
+        if (isWildcard(c)) return anyChildMatches(node, word, index);
+        else               return exactChildMatches(node, c, word, index);
+    }
+
+    // ── Helpers ──
+    private TrieNode walkTo(String prefix) {
+        TrieNode node = root;
         for (char c : prefix.toCharArray()) {
-            current = current.children.get(c);
-            if (current == null) return null;
+            if (!node.hasChild(c)) return null;
+            node = node.getChild(c);
         }
-        return current;
+        return node;
     }
-}
-
-// ── Wildcard search — '.' matches any character ──
-public boolean searchWithWildcard(TrieNode node, String word, int index) {
-    if (index == word.length()) return node.isEnd;
-
-    char c = word.charAt(index);
-
-    if (c == '.') {
-        // Try every possible child
-        return node.children.values().stream()
-            .anyMatch(child -> searchWithWildcard(child, word, index + 1));
-    } else {
-        TrieNode next = node.children.get(c);
-        return next != null && searchWithWildcard(next, word, index + 1);
+    private boolean nodeExists(TrieNode node)           { return node != null; }
+    private boolean reachedEnd(String word, int index)  { return index == word.length(); }
+    private boolean isWildcard(char c)                  { return c == '.'; }
+    private boolean anyChildMatches(TrieNode node, String word, int index) {
+        return node.allChildren().stream().anyMatch(child -> matchFrom(child, word, index + 1));
+    }
+    private boolean exactChildMatches(TrieNode node, char c, String word, int index) {
+        return node.hasChild(c) && matchFrom(node.getChild(c), word, index + 1);
     }
 }`),
-    questions: [
-      { name: "Implement Trie",          diff: "Medium", note: "know cold" },
-      { name: "Word Search II",          diff: "Hard",   note: "Trie + DFS on board" },
-      { name: "Add and Search Words",    diff: "Medium", note: "'.' → DFS all children" },
+    questions:[
+      {name:"Implement Trie",diff:"Medium",note:"know cold"},
+      {name:"Word Search II",diff:"Hard",note:"Trie + DFS on board"},
+      {name:"Add and Search Words",diff:"Medium",note:"'.' → anyChildMatches"},
     ]
   },
   {
-    id: "graphs",
-    name: "Graphs (Advanced)",
-    color: "#67E8F9",
-    freq: "★★★",
-    triggerWords: ["topological sort", "course schedule", "directed cycle", "weighted shortest path", "union find", "redundant connection"],
-    insight: "Topo sort = Kahn's BFS (in-degree 0 queue). If result.size() != n, a cycle exists. Union-Find with path compression for connectivity. Dijkstra for weighted shortest path.",
+    id:"graphs", name:"Graphs (Advanced)", color:"#67E8F9", freq:"★★★",
+    triggerWords:["topological sort","course schedule","directed cycle","weighted shortest path","union find","redundant connection"],
+    rule:"Topo sort: process nodes only after all their prerequisites are done. Union-Find: group nodes into connected sets — if two nodes are already in the same set, adding an edge creates a cycle.",
+    diagram:
+`  Topological Sort (course prereqs):
+
+  0 → 1 → 3
+  ↓       ↑
+  2 ──────┘
+
+  in-degree: [0]=0, [1]=1, [2]=1, [3]=2
+  Queue (in-degree 0): [0]
+
+  Process 0: reduce neighbors 1,2 → in-degree: [1]=0, [2]=0
+  Queue: [1, 2]
+  Process 1: reduce 3 → in-degree: [3]=1
+  Process 2: reduce 3 → in-degree: [3]=0
+  Queue: [3]
+  Process 3: done
+
+  Order: [0,1,2,3] ✓  (len=4=n → no cycle)
+
+  Union-Find (detect redundant edge):
+
+  edges: 1-2, 2-3, 1-3
+  Add 1-2: find(1)=1, find(2)=2 → different → union ✓
+  Add 2-3: find(2)=1, find(3)=3 → different → union ✓
+  Add 1-3: find(1)=1, find(3)=1 → SAME SET → cycle! return [1,3]`,
+    insight:"In-degree 0 means 'no prerequisites left' — safe to process. Union-Find with path compression is nearly O(1) per operation. If union() returns false, you found your cycle edge.",
     template: highlightJava(
-`// ── Topological Sort — Kahn's BFS ──
+`// Topological Sort — Kahn's BFS
 public int[] findOrder(int numCourses, int[][] prerequisites) {
     int[] inDegree = new int[numCourses];
-    List<List<Integer>> graph = new ArrayList<>();
-    IntStream.range(0, numCourses).forEach(i -> graph.add(new ArrayList<>()));
-
-    for (int[] prereq : prerequisites) {
-        graph.get(prereq[1]).add(prereq[0]);
-        inDegree[prereq[0]]++;
-    }
-
-    Queue<Integer> queue = IntStream.range(0, numCourses)
-        .filter(i -> inDegree[i] == 0)
-        .boxed()
-        .collect(Collectors.toCollection(ArrayDeque::new));
+    List<List<Integer>> dependents = buildAdjacencyList(numCourses, prerequisites, inDegree);
+    Queue<Integer> readyToTake    = findCoursesWithNoPrereqs(inDegree, numCourses);
 
     int[] order = new int[numCourses];
-    int index = 0;
+    int taken   = 0;
 
-    while (!queue.isEmpty()) {
-        int course = queue.poll();
-        order[index++] = course;
+    while (!readyToTake.isEmpty()) {
+        int course = readyToTake.poll();
+        order[taken++] = course;
 
-        for (int next : graph.get(course)) {
-            if (--inDegree[next] == 0) queue.offer(next);
+        for (int dependent : dependents.get(course)) {
+            decrementPrereqs(inDegree, dependent);
+            if (allPrereqsDone(inDegree, dependent)) readyToTake.offer(dependent);
         }
     }
-    return index == numCourses ? order : new int[0]; // empty = cycle detected
+    return allCoursesTaken(taken, numCourses) ? order : new int[0];
 }
 
-// ── Union-Find with path compression + union by rank ──
+// Union-Find — path compression + union by rank
 class UnionFind {
     private final int[] parent;
     private final int[] rank;
 
     UnionFind(int n) {
-        parent = IntStream.range(0, n).toArray(); // each node is its own parent
+        parent = IntStream.range(0, n).toArray();
         rank   = new int[n];
     }
 
-    int find(int x) {
-        if (parent[x] != x) parent[x] = find(parent[x]); // path compression
-        return parent[x];
+    int findRoot(int node) {
+        if (isOwnParent(node)) return node;
+        parent[node] = findRoot(parent[node]); // path compression
+        return parent[node];
     }
 
-    boolean union(int x, int y) {
-        int rootX = find(x), rootY = find(y);
-        if (rootX == rootY) return false;          // already in same set — cycle!
+    boolean union(int a, int b) {
+        int rootA = findRoot(a), rootB = findRoot(b);
+        if (alreadyConnected(rootA, rootB)) return false; // cycle detected
 
-        if (rank[rootX] < rank[rootY]) parent[rootX] = rootY;
-        else if (rank[rootX] > rank[rootY]) parent[rootY] = rootX;
-        else { parent[rootY] = rootX; rank[rootX]++; }
+        attachSmallerToLarger(rootA, rootB);
         return true;
     }
-}`),
-    questions: [
-      { name: "Course Schedule",                diff: "Medium", note: "cycle via topo sort" },
-      { name: "Course Schedule II",             diff: "Medium", note: "return order array" },
-      { name: "Number of Connected Components", diff: "Medium", note: "Union-Find or DFS" },
-      { name: "Redundant Connection",           diff: "Medium", note: "union returns false = answer" },
-      { name: "Network Delay Time",             diff: "Medium", note: "Dijkstra from source" },
+
+    // ── Helpers ──
+    private boolean isOwnParent(int node)              { return parent[node] == node; }
+    private boolean alreadyConnected(int a, int b)     { return a == b; }
+    private void attachSmallerToLarger(int a, int b) {
+        if      (rank[a] < rank[b]) parent[a] = b;
+        else if (rank[a] > rank[b]) parent[b] = a;
+        else { parent[b] = a; rank[a]++; }
+    }
+}
+
+// ── Graph builder helpers ──
+private List<List<Integer>> buildAdjacencyList(int n, int[][] prereqs, int[] inDegree) {
+    List<List<Integer>> graph = new ArrayList<>();
+    IntStream.range(0, n).forEach(i -> graph.add(new ArrayList<>()));
+    for (int[] prereq : prereqs) {
+        graph.get(prereq[1]).add(prereq[0]);
+        inDegree[prereq[0]]++;
+    }
+    return graph;
+}
+private Queue<Integer> findCoursesWithNoPrereqs(int[] inDegree, int n) {
+    return IntStream.range(0, n).filter(i -> inDegree[i] == 0)
+        .boxed().collect(Collectors.toCollection(ArrayDeque::new));
+}
+private void    decrementPrereqs(int[] inDegree, int course) { inDegree[course]--; }
+private boolean allPrereqsDone(int[] inDegree, int course)   { return inDegree[course] == 0; }
+private boolean allCoursesTaken(int taken, int total)        { return taken == total; }`),
+    questions:[
+      {name:"Course Schedule",diff:"Medium",note:"cycle via topo sort"},
+      {name:"Course Schedule II",diff:"Medium",note:"return order array"},
+      {name:"Number of Connected Components",diff:"Medium",note:"Union-Find or DFS"},
+      {name:"Redundant Connection",diff:"Medium",note:"union returns false = answer"},
+      {name:"Network Delay Time",diff:"Medium",note:"Dijkstra from source"},
     ]
   },
 ];
 
-// ─────────────────────────────────────────────
-//  Syntax highlighter — simple token-based
-// ─────────────────────────────────────────────
-function highlightJava(code) {
-  const keywords = /\b(public|private|class|record|new|return|if|else|for|while|break|continue|void|int|boolean|char|double|static|final|null|true|false|this)\b/g;
-  const types    = /\b(List|Map|Set|Queue|Deque|PriorityQueue|ArrayDeque|ArrayList|HashMap|HashSet|String|Integer|Character|Arrays|Collections|IntStream|Comparator|Optional|Objects)\b/g;
-  const comments = /(\/\/[^\n]*)/g;
-  const strings  = /("[^"]*")/g;
-
-  return code
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(strings,  '<span class="st">$1</span>')
-    .replace(comments, '<span class="cm">$1</span>')
-    .replace(keywords, '<span class="kw">$1</span>')
-    .replace(types,    '<span class="tp">$1</span>');
-}
-
-// ─────────────────────────────────────────────
-//  Render engine
-// ─────────────────────────────────────────────
-const DIFF_COLOR = { Easy: "#34D399", Medium: "#FBBF24", Hard: "#F87171" };
-let activeId   = patterns[0].id;
+const DIFF_COLOR = { Easy:"#34D399", Medium:"#FBBF24", Hard:"#F87171" };
+let activeIdx  = 0;
 let showTmpl   = false;
+let drawerOpen = false;
 
 function render() {
-  const p = patterns.find(x => x.id === activeId);
+  const p = patterns[activeIdx];
 
-  // Sidebar
-  document.getElementById('sidebar').innerHTML = patterns.map(x => `
-    <button class="nav-btn ${x.id === activeId ? 'active' : ''}"
-      style="border-left-color:${x.id === activeId ? x.color : 'transparent'}"
-      onclick="select('${x.id}')">
-      <div class="nav-name" style="color:${x.id === activeId ? x.color : '#4A5080'}">${x.name}</div>
+  // Desktop sidebar
+  document.getElementById('sidebar').innerHTML = patterns.map((x,i) => `
+    <button class="nav-btn ${i===activeIdx?'active':''}"
+      style="border-left-color:${i===activeIdx?x.color:'transparent'}"
+      onclick="selectIdx(${i})">
+      <div class="nav-name" style="color:${i===activeIdx?x.color:'#4A5080'}">${x.name}</div>
       <div class="nav-freq">${x.freq}</div>
     </button>`).join('');
 
-  // Header
+  // Mobile drawer
+  document.getElementById('drawer').innerHTML =
+    '<div style="padding:0 16px 10px;font-size:10px;font-weight:700;letter-spacing:2px;color:#3D4060;text-transform:uppercase;">Patterns</div>' +
+    patterns.map((x,i) => `
+    <button class="drawer-btn ${i===activeIdx?'active':''}"
+      style="border-left-color:${i===activeIdx?x.color:'transparent'}"
+      onclick="selectIdx(${i});closeDrawer()">
+      <div class="nav-name" style="color:${i===activeIdx?x.color:'#4A5080'}">${x.name}</div>
+      <div class="nav-freq">${x.freq}</div>
+    </button>`).join('');
+
+  // Mobile bottom nav
+  document.getElementById('mob-label').textContent   = p.name;
+  document.getElementById('mob-counter').textContent = `${activeIdx+1}/${patterns.length}`;
+
+  // Detail header
   const dot = document.getElementById('dot');
-  dot.style.background  = p.color;
-  dot.style.boxShadow   = `0 0 10px ${p.color}`;
-  document.querySelector('.detail-header').style.borderBottomColor = p.color + '33';
+  dot.style.background = p.color;
+  dot.style.boxShadow  = `0 0 10px ${p.color}`;
+  document.querySelector('.detail-header').style.borderBottomColor = p.color + '44';
   const title = document.getElementById('detail-title');
-  title.textContent = p.name;
-  title.style.color = p.color;
+  title.textContent = p.name; title.style.color = p.color;
   document.getElementById('detail-freq').textContent = p.freq;
 
-  // Trigger words
+  // Triggers
   document.getElementById('triggers').innerHTML = p.triggerWords.map(w =>
-    `<span class="tag" style="background:${p.color}15;border-color:${p.color}40;color:${p.color}">${w}</span>`
+    `<span class="tag" style="background:${p.color}15;border-color:${p.color}44;color:${p.color}">${w}</span>`
   ).join('');
 
+  // Visual box
+  document.getElementById('visual-box').style.borderLeftColor = p.color;
+  document.getElementById('visual-rule').textContent    = '📐 ' + p.rule;
+  document.getElementById('visual-diagram').textContent = p.diagram;
+
   // Insight
-  const insightBox = document.getElementById('insight-box');
-  insightBox.style.borderLeftColor = p.color;
+  document.getElementById('insight-box').style.borderLeftColor = p.color;
   document.getElementById('insight-text').textContent = p.insight;
 
   // Template
   showTmpl = false;
   const tmpl = document.getElementById('template-box');
-  tmpl.innerHTML  = p.template;
-  tmpl.style.display      = 'none';
-  tmpl.style.borderColor  = p.color + '30';
+  tmpl.innerHTML = p.template; tmpl.style.display = 'none'; tmpl.style.borderColor = p.color+'30';
   const btn = document.getElementById('toggle-btn');
-  btn.textContent      = '▶ SHOW JAVA TEMPLATE';
-  btn.style.background = 'var(--bg3)';
-  btn.style.borderColor = 'var(--border)';
-  btn.style.color      = 'var(--muted)';
+  btn.textContent = '▶ SHOW JAVA CODE';
+  btn.style.background = 'var(--bg3)'; btn.style.borderColor = 'var(--border)'; btn.style.color = 'var(--muted)';
 
   // Questions
   document.getElementById('questions').innerHTML = p.questions.map(q => `
@@ -1083,31 +1386,53 @@ function render() {
       <span class="q-name">${q.name}</span>
       <span class="q-note">${q.note}</span>
     </div>`).join('');
+
+  document.getElementById('detail').scrollTop = 0;
 }
 
-function select(id) { activeId = id; render(); }
+function selectIdx(i)  { activeIdx = i; render(); }
+function navigate(dir) { activeIdx = (activeIdx + dir + patterns.length) % patterns.length; render(); }
 
 function toggleTemplate() {
-  const p   = patterns.find(x => x.id === activeId);
-  showTmpl  = !showTmpl;
+  const p = patterns[activeIdx];
+  showTmpl = !showTmpl;
   const tmpl = document.getElementById('template-box');
   const btn  = document.getElementById('toggle-btn');
   tmpl.style.display = showTmpl ? 'block' : 'none';
   if (showTmpl) {
-    btn.textContent   = '▼ HIDE TEMPLATE';
-    btn.style.background  = p.color + '18';
-    btn.style.borderColor = p.color;
-    btn.style.color       = p.color;
+    btn.textContent = '▼ HIDE CODE';
+    btn.style.background = p.color+'18'; btn.style.borderColor = p.color; btn.style.color = p.color;
   } else {
-    btn.textContent   = '▶ SHOW JAVA TEMPLATE';
-    btn.style.background  = 'var(--bg3)';
-    btn.style.borderColor = 'var(--border)';
-    btn.style.color       = 'var(--muted)';
+    btn.textContent = '▶ SHOW JAVA CODE';
+    btn.style.background = 'var(--bg3)'; btn.style.borderColor = 'var(--border)'; btn.style.color = 'var(--muted)';
   }
 }
 
+function toggleDrawer() {
+  drawerOpen = !drawerOpen;
+  document.getElementById('drawer').classList.toggle('open', drawerOpen);
+  document.getElementById('drawer-overlay').classList.toggle('open', drawerOpen);
+}
+function closeDrawer() {
+  drawerOpen = false;
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+}
+
+// Swipe navigation
+let touchStartX = 0;
+document.getElementById('detail').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive:true});
+document.getElementById('detail').addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 60) navigate(dx < 0 ? 1 : -1);
+}, {passive:true});
+
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown') navigate(1);
+  if (e.key==='ArrowLeft' ||e.key==='ArrowUp')   navigate(-1);
+});
+
 render();
 </script>
-
 </body>
-</html>
+</html>       
